@@ -1,5 +1,7 @@
 UltraFinder
 
+
+## config json template
 ```javascript
 {
   "root": "Desktop",
