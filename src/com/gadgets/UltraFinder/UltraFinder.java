@@ -3,7 +3,6 @@ package com.gadgets.UltraFinder;
 import java.io.File;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +13,7 @@ public class UltraFinder {
 	CustomFileFilter filenameFilter = null;
 	static char seperator = File.separatorChar;
 
-	public UltraFinder(File StartingPath, CustomFileFilter filenameFilter){
+	public UltraFinder(File StartingPath, CustomFileFilter filenameFilter) {
 
 		this.filenameFilter = filenameFilter;
 		FileFinder fileFinder = new FileFinder(this, StartingPath);
@@ -32,6 +31,22 @@ public class UltraFinder {
 			e.printStackTrace();
 		}
 		System.out.println(waitToScanFiles.size());
+
+		Integer totalWork = waitToScanFiles.size();
+
+		while (waitToScanFiles.size() > 0) {
+			FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll());
+			try {
+				fileContentScanner.call();
+
+				System.out.println(totalWork - waitToScanFiles.size() + " / " + totalWork);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// break;
+
+		}
 	}
 
 	public static void main(String[] args) {
@@ -42,7 +57,7 @@ public class UltraFinder {
 
 		HashSet<String> targetExts = new HashSet<>();
 		// targetExts.add("txt");
-		targetExts.add("bat");
+		targetExts.add("txt");
 
 		CustomFileFilter customFileFilter = new CustomFileFilter(targetExts);
 

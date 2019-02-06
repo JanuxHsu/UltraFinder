@@ -18,7 +18,7 @@ public class FileFinder implements Runnable {
 			if (subFile.isFile() && subFile.exists()) {
 				if (caller.filenameFilter.filterExtension(subFile)) {
 					caller.waitToScanFiles.add(subFile);
-					System.out.println(subFile.getAbsolutePath() + " || added!");
+					// System.out.println(subFile.getAbsolutePath() + " || added!");
 				}
 
 			} else {
