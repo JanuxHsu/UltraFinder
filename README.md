@@ -1,5 +1,6 @@
 UltraFinder
-'''json
+
+```javascript
 {
   "root": "Desktop",
   "thread_num": 4,
@@ -14,4 +15,4 @@ UltraFinder
     "case_sensitive": false
   }
 }
-'''
+```
