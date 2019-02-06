@@ -27,6 +27,8 @@ public class FileContentScanner implements Callable<HashSet<ScanResult>> {
 				String line = null;
 				Integer rowCnt = 0;
 				while ((line = bufferedReader.readLine()) != null) {
+
+					ScanResult scanResult = new ScanResult(rowCnt, line);
 					// System.out.println(line);
 					rowCnt++;
 				}
