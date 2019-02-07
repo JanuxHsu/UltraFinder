@@ -1,8 +1,14 @@
 package com.gadgets.UltraFinder;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -15,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
 import Model.ScanResult;
@@ -32,6 +39,12 @@ public class UltraFinder {
 		this.filenameFilter = customFileFilter;
 		this.config = config;
 
+		System.out.println("============================");
+		System.out.println("Filters:  " + String.join(", ", this.config.filter));
+		System.out.println("Keywords: " + String.join(", ", this.config.keywords));
+		System.out.println("IgnoreCase: " + this.config.search_caseSensitive);
+		System.out.println("============================");
+
 	}
 
 	public void start() throws InterruptedException {
@@ -47,7 +60,6 @@ public class UltraFinder {
 		executorService.shutdown();
 		executorService.awaitTermination(100000, TimeUnit.SECONDS);
 
-		executorService = Executors.newFixedThreadPool(5);
 		System.out.println(waitToScanFiles.size());
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5, 100000, TimeUnit.SECONDS,
@@ -80,8 +92,6 @@ public class UltraFinder {
 		executor.shutdown();
 		// executor.awaitTermination(1000000, TimeUnit.SECONDS);
 
-		System.out.println("waiting...");
-
 		while (monitorThread.isAlive()) {
 			// System.out.println("111111");
 		}
@@ -92,13 +102,15 @@ public class UltraFinder {
 		// executorService.awaitTermination(100000, TimeUnit.SECONDS);
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws IOException {
 
 		File configFile = new File("./config.json");
 
 		Gson gson = new Gson();
 		JsonReader jsonReader = new JsonReader(new FileReader(configFile));
-		UltraFinderConfig config = gson.fromJson(jsonReader, UltraFinderConfig.class);
+		JsonObject configJSON = gson.fromJson(jsonReader, JsonObject.class);
+
+		UltraFinderConfig config = gson.fromJson(configJSON, UltraFinderConfig.class);
 
 		// clean up config filter case
 
@@ -109,6 +121,9 @@ public class UltraFinder {
 		config.root_path = config.root_path.equals("Desktop") ? System.getProperty("user.home") + seperator + "Desktop"
 				: config.root_path;
 
+		config.search_caseSensitive = configJSON.get("search_options").getAsJsonObject().get("case_sensitive")
+				.getAsBoolean();
+
 		UltraFinder ultraFinder = new UltraFinder(config);
 		try {
 			ultraFinder.start();
@@ -116,6 +131,7 @@ public class UltraFinder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 }
