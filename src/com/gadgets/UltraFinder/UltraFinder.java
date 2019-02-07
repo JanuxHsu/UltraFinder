@@ -1,11 +1,19 @@
 package com.gadgets.UltraFinder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+import Model.UltraFinderConfig;
 
 public class UltraFinder {
 
@@ -49,7 +57,23 @@ public class UltraFinder {
 		}
 	}
 
-	public static void main(String[] args) {
+	public UltraFinder(UltraFinderConfig config) {
+		CustomFileFilter customFileFilter = new CustomFileFilter(config.filter);
+		this.filenameFilter = customFileFilter;
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) throws FileNotFoundException {
+
+		File configFile = new File("./config.json");
+
+		Gson gson = new Gson();
+		JsonReader jsonReader = new JsonReader(new FileReader(configFile));
+		UltraFinderConfig config = gson.fromJson(jsonReader, UltraFinderConfig.class);
+
+		// clean up config filter case
+
+		config.filter = config.filter.stream().map(item -> item.toLowerCase()).collect(Collectors.toSet());
 
 		String rootPath = System.getProperty("user.home") + seperator + "Desktop";
 
@@ -61,7 +85,7 @@ public class UltraFinder {
 
 		CustomFileFilter customFileFilter = new CustomFileFilter(targetExts);
 
-		UltraFinder ultraFinder = new UltraFinder(root, customFileFilter);
+		UltraFinder ultraFinder = new UltraFinder(config);
 
 	}
 

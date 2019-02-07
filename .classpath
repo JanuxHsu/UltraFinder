@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="/Users/janux/Desktop/commons-io-2.6/commons-io-2.6-javadoc.jar"/>
 	<classpathentry kind="lib" path="/Users/janux/Desktop/commons-io-2.6/commons-io-2.6.jar"/>
+	<classpathentry kind="lib" path="/Users/janux/Desktop/gson-2.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

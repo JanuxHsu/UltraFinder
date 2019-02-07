@@ -2,14 +2,15 @@ package com.gadgets.UltraFinder;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 
 public class CustomFileFilter {
 
-	HashSet<String> targetExtensions = new HashSet<>();
+	Set<String> targetExtensions = new HashSet<>();
 
-	public CustomFileFilter(HashSet<String> targetExtensions) {
+	public CustomFileFilter(Set<String> targetExtensions) {
 		this.targetExtensions = targetExtensions;
 	}
 
