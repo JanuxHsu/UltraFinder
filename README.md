@@ -4,10 +4,10 @@ UltraFinder
 ## config json template
 ```javascript
 {
-  "root": "Desktop",
+  "root_path": "Desktop",
   "thread_num": 4,
   "filter": [
-    "txt"
+    "TxT"
   ],
   "keywords": [
     "July",
