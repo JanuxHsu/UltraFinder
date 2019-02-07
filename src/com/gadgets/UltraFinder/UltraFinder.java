@@ -4,15 +4,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashSet;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
+import Model.ScanResult;
 import Model.UltraFinderConfig;
 
 public class UltraFinder {
@@ -29,41 +34,64 @@ public class UltraFinder {
 
 	}
 
-	public void start() {
+	public void start() throws InterruptedException {
 		File starting_file = new File(config.root_path);
 
 		FileFinder fileFinder = new FileFinder(this, starting_file);
 
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
 
-		executorService.submit(fileFinder);
+		Future<?> search_job = executorService.submit(fileFinder);
 
 		// System.out.println(waitToScanFiles.size());
-		try {
-			executorService.shutdown();
-			executorService.awaitTermination(100000, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		executorService.shutdown();
+		executorService.awaitTermination(100000, TimeUnit.SECONDS);
 
+		executorService = Executors.newFixedThreadPool(5);
 		System.out.println(waitToScanFiles.size());
+
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5, 100000, TimeUnit.SECONDS,
+				new LinkedBlockingQueue<Runnable>(1000));
+
+		ThreadPoolMonitor monitor = new ThreadPoolMonitor(executor, 200);
+		Thread monitorThread = new Thread(monitor);
+		monitorThread.start();
 
 		Integer totalWork = waitToScanFiles.size();
 
-		while (waitToScanFiles.size() > 0) {
-			FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll());
-			try {
-				fileContentScanner.call();
+		while (waitToScanFiles.size() > 0 || !search_job.isDone()) {
+			if (waitToScanFiles.peek() != null) {
+				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll());
+				try {
+//					executorService.submit(fileContentScanner);
+					// jobs.add(fileContentScanner);
+					executor.submit(fileContentScanner);
+					// fileContentScanner.call();
 
-				System.out.println(totalWork - waitToScanFiles.size() + " / " + totalWork);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+					// System.out.println(totalWork - waitToScanFiles.size() + " / " + totalWork);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// break;
 			}
-			// break;
 
 		}
+		executor.shutdown();
+		// executor.awaitTermination(1000000, TimeUnit.SECONDS);
+
+		System.out.println("waiting...");
+
+		System.out.println(monitorThread.isAlive());
+
+		while (monitorThread.isAlive()) {
+			//System.out.println("111111");
+		}
+
+		System.out.println("End");
+
+		// executorService.shutdown();
+		// executorService.awaitTermination(100000, TimeUnit.SECONDS);
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
@@ -84,7 +112,12 @@ public class UltraFinder {
 				: config.root_path;
 
 		UltraFinder ultraFinder = new UltraFinder(config);
-		ultraFinder.start();
+		try {
+			ultraFinder.start();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
