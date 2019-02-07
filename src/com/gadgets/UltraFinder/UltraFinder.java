@@ -3,6 +3,8 @@ package com.gadgets.UltraFinder;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,8 +28,9 @@ public class UltraFinder {
 	UltraFinderConfig config = null;
 
 	KeyWordHandler keyWordHandler = null;
-
-	ConcurrentLinkedQueue<ScanResult> foundResult = new ConcurrentLinkedQueue<>();
+	ConcurrentHashMap<String, ArrayList<ScanResult>> foundResult = new ConcurrentHashMap<>();
+	// ConcurrentLinkedQueue<ScanResult> foundResult = new
+	// ConcurrentLinkedQueue<>();
 	static char seperator = File.separatorChar;
 
 	public UltraFinder(UltraFinderConfig config) {
@@ -96,9 +99,13 @@ public class UltraFinder {
 
 		System.out.println(foundResult.size());
 
-		for (ScanResult zz : foundResult) {
+		for (String key : foundResult.keySet()) {
+			ArrayList<ScanResult> keyLineList = foundResult.get(key);
 
-			System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
+			for (ScanResult zz : keyLineList) {
+				System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
+
+			}
 
 		}
 
