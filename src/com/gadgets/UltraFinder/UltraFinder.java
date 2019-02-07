@@ -19,12 +19,20 @@ public class UltraFinder {
 
 	ConcurrentLinkedQueue<File> waitToScanFiles = new ConcurrentLinkedQueue<>();
 	CustomFileFilter filenameFilter = null;
+	UltraFinderConfig config = null;
 	static char seperator = File.separatorChar;
 
-	public UltraFinder(File StartingPath, CustomFileFilter filenameFilter) {
+	public UltraFinder(UltraFinderConfig config) {
+		CustomFileFilter customFileFilter = new CustomFileFilter(config.filter);
+		this.filenameFilter = customFileFilter;
+		this.config = config;
 
-		this.filenameFilter = filenameFilter;
-		FileFinder fileFinder = new FileFinder(this, StartingPath);
+	}
+
+	public void start() {
+		File starting_file = new File(config.root_path);
+
+		FileFinder fileFinder = new FileFinder(this, starting_file);
 
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
 
@@ -38,6 +46,7 @@ public class UltraFinder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		System.out.println(waitToScanFiles.size());
 
 		Integer totalWork = waitToScanFiles.size();
@@ -57,12 +66,6 @@ public class UltraFinder {
 		}
 	}
 
-	public UltraFinder(UltraFinderConfig config) {
-		CustomFileFilter customFileFilter = new CustomFileFilter(config.filter);
-		this.filenameFilter = customFileFilter;
-		// TODO Auto-generated constructor stub
-	}
-
 	public static void main(String[] args) throws FileNotFoundException {
 
 		File configFile = new File("./config.json");
@@ -75,18 +78,13 @@ public class UltraFinder {
 
 		config.filter = config.filter.stream().map(item -> item.toLowerCase()).collect(Collectors.toSet());
 
-		String rootPath = System.getProperty("user.home") + seperator + "Desktop";
+		// insert Desktop path for dev
 
-		File root = new File(rootPath);
-
-		HashSet<String> targetExts = new HashSet<>();
-		// targetExts.add("txt");
-		targetExts.add("txt");
-
-		CustomFileFilter customFileFilter = new CustomFileFilter(targetExts);
+		config.root_path = config.root_path.equals("Desktop") ? System.getProperty("user.home") + seperator + "Desktop"
+				: config.root_path;
 
 		UltraFinder ultraFinder = new UltraFinder(config);
-
+		ultraFinder.start();
 	}
 
 }

@@ -8,16 +8,24 @@ public class KeyWordHandler {
 
 	HashSet<String> keywordPatterns;
 
-	public KeyWordHandler(HashSet<String> keywordPatterns) {
+	boolean isCaseSensitive = false;
+
+	public KeyWordHandler(HashSet<String> keywordPatterns, boolean isCaseSensitive) {
 		this.keywordPatterns = keywordPatterns;
+		this.isCaseSensitive = isCaseSensitive;
 
 	}
 
 	public boolean checkKeyWordInLine(String line) {
-		for (String pattern_str : keywordPatterns) {
-			Pattern keywordPatter = Pattern.compile(pattern_str);
 
-			Matcher matcher = keywordPatter.matcher(line);
+		String scan_line = isCaseSensitive ? line : line.toLowerCase();
+
+		for (String pattern_str : keywordPatterns) {
+
+			String matcher_pattern = this.isCaseSensitive ? pattern_str : pattern_str.toLowerCase();
+			Pattern keywordPatter = Pattern.compile(matcher_pattern);
+			Matcher matcher = keywordPatter.matcher(scan_line);
+			
 			if (matcher.matches()) {
 				return true;
 			}
