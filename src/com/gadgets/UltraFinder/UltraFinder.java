@@ -98,7 +98,7 @@ public class UltraFinder {
 
 		for (ScanResult zz : foundResult) {
 
-			System.out.println(zz.lineContent);
+			System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
 
 		}
 

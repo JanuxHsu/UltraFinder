@@ -38,7 +38,8 @@ public class FileContentScanner implements Runnable {
 				Integer rowCnt = 0;
 				while ((line = bufferedReader.readLine()) != null) {
 					if (this.keyWordHandler.checkKeyWordInLine(line)) {
-						ScanResult scanResult = new ScanResult(rowCnt, line);
+						ScanResult scanResult = new ScanResult(myScannFile.getName(), myScannFile.getAbsolutePath(),
+								rowCnt, line);
 						// System.out.println(line);
 						this.resultPool.add(scanResult);
 					}
