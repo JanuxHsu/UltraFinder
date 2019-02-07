@@ -1,16 +1,8 @@
 package com.gadgets.UltraFinder;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashSet;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,18 +24,22 @@ public class UltraFinder {
 	ConcurrentLinkedQueue<File> waitToScanFiles = new ConcurrentLinkedQueue<>();
 	CustomFileFilter filenameFilter = null;
 	UltraFinderConfig config = null;
+
+	KeyWordHandler keyWordHandler = null;
+
+	ConcurrentLinkedQueue<ScanResult> foundResult = new ConcurrentLinkedQueue<>();
 	static char seperator = File.separatorChar;
 
 	public UltraFinder(UltraFinderConfig config) {
 		CustomFileFilter customFileFilter = new CustomFileFilter(config.filter);
 		this.filenameFilter = customFileFilter;
 		this.config = config;
-
-		System.out.println("============================");
+		this.keyWordHandler = new KeyWordHandler(this.config.keywords, this.config.search_caseSensitive);
+		System.out.println("=================================================");
 		System.out.println("Filters:  " + String.join(", ", this.config.filter));
 		System.out.println("Keywords: " + String.join(", ", this.config.keywords));
 		System.out.println("IgnoreCase: " + this.config.search_caseSensitive);
-		System.out.println("============================");
+		System.out.println("=================================================");
 
 	}
 
@@ -69,13 +65,13 @@ public class UltraFinder {
 		Thread monitorThread = new Thread(monitor);
 		monitorThread.start();
 
-		Integer totalWork = waitToScanFiles.size();
-
 		while (waitToScanFiles.size() > 0 || !search_job.isDone()) {
 			if (waitToScanFiles.peek() != null) {
-				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll());
+
+				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll(), keyWordHandler,
+						foundResult);
 				try {
-//					executorService.submit(fileContentScanner);
+					// executorService.submit(fileContentScanner);
 					// jobs.add(fileContentScanner);
 					executor.submit(fileContentScanner);
 					// fileContentScanner.call();
@@ -97,6 +93,14 @@ public class UltraFinder {
 		}
 
 		System.out.println("End");
+
+		System.out.println(foundResult.size());
+
+		for (ScanResult zz : foundResult) {
+
+			System.out.println(zz.lineContent);
+
+		}
 
 		// executorService.shutdown();
 		// executorService.awaitTermination(100000, TimeUnit.SECONDS);
