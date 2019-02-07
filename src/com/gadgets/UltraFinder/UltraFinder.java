@@ -51,7 +51,7 @@ public class UltraFinder {
 		System.out.println(waitToScanFiles.size());
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5, 100000, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<Runnable>(1000));
+				new LinkedBlockingQueue<Runnable>());
 
 		ThreadPoolMonitor monitor = new ThreadPoolMonitor(executor, 200);
 		Thread monitorThread = new Thread(monitor);
@@ -82,10 +82,8 @@ public class UltraFinder {
 
 		System.out.println("waiting...");
 
-		System.out.println(monitorThread.isAlive());
-
 		while (monitorThread.isAlive()) {
-			//System.out.println("111111");
+			// System.out.println("111111");
 		}
 
 		System.out.println("End");

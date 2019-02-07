@@ -2,7 +2,9 @@
   "root_path": "Desktop",
   "thread_num": 4,
   "filter": [
-    "TxT"
+    "TxT",
+    "XML",
+    "bat"
   ],
   "keywords": [
     "July",
