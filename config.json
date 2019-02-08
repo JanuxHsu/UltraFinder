@@ -1,14 +1,12 @@
 {
   "root_path": "Desktop",
-  "thread_num": 4,
+  "thread_num": 6,
   "filter": [
     "TxT",
-    "XML",
     "bat"
   ],
   "keywords": [
-    "July",
-    "Developer"
+    "Earth"
   ],
   "search_options": {
     "case_sensitive": false

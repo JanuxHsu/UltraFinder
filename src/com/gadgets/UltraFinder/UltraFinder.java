@@ -39,6 +39,7 @@ public class UltraFinder {
 		this.config = config;
 		this.keyWordHandler = new KeyWordHandler(this.config.keywords, this.config.search_caseSensitive);
 		System.out.println("=================================================");
+		System.out.println("Threads: " + this.config.thread_num);
 		System.out.println("Filters:  " + String.join(", ", this.config.filter));
 		System.out.println("Keywords: " + String.join(", ", this.config.keywords));
 		System.out.println("IgnoreCase: " + this.config.search_caseSensitive);
@@ -61,8 +62,8 @@ public class UltraFinder {
 
 		System.out.println(waitToScanFiles.size());
 
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5, 100000, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<Runnable>());
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(this.config.thread_num, this.config.thread_num, 100000,
+				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
 		ThreadPoolMonitor monitor = new ThreadPoolMonitor(executor, 200);
 		Thread monitorThread = new Thread(monitor);
@@ -102,8 +103,14 @@ public class UltraFinder {
 		for (String key : foundResult.keySet()) {
 			ArrayList<ScanResult> keyLineList = foundResult.get(key);
 
+			System.out.println(key + " | " + keyLineList.size());
+			int counter = 0;
 			for (ScanResult zz : keyLineList) {
 				System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
+				counter++;
+				if (counter > 10) {
+					break;
+				}
 
 			}
 
