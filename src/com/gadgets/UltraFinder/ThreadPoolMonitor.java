@@ -1,5 +1,6 @@
 package com.gadgets.UltraFinder;
 
+import java.io.IOException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class ThreadPoolMonitor implements Runnable {
@@ -8,7 +9,7 @@ public class ThreadPoolMonitor implements Runnable {
 	private int milliseconds;
 
 	private boolean run = true;
-	
+
 	final UltraFinder ultraFinder;
 
 	public ThreadPoolMonitor(UltraFinder ultraFinder, ThreadPoolExecutor executor, int delay) {
@@ -24,16 +25,22 @@ public class ThreadPoolMonitor implements Runnable {
 	@Override
 	public void run() {
 		while (run) {
-			System.out.println(String.format(
-					"[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s",
-					this.executor.getPoolSize(), this.executor.getCorePoolSize(), this.executor.getActiveCount(),
-					this.executor.getCompletedTaskCount(), this.executor.getTaskCount(), this.executor.isShutdown(),
-					this.executor.isTerminated()));
-			
-			if(this.ultraFinder.gui_form != null) {
+
+			try {
+				System.out.write(String.format(
+						"[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s\r",
+						this.executor.getPoolSize(), this.executor.getCorePoolSize(), this.executor.getActiveCount(),
+						this.executor.getCompletedTaskCount(), this.executor.getTaskCount(), this.executor.isShutdown(),
+						this.executor.isTerminated()).getBytes());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			if (this.ultraFinder.gui_form != null) {
+				this.ultraFinder.updateThreadStatus(this.executor.getActiveCount());
 				this.ultraFinder.gui_form.updateSearchProgress(this.executor.getCompletedTaskCount());
 			}
-			
 
 			if (this.executor.getCompletedTaskCount() == this.executor.getTaskCount()
 					&& this.executor.getCompletedTaskCount() > 0) {
@@ -46,7 +53,7 @@ public class ThreadPoolMonitor implements Runnable {
 			}
 		}
 
-		System.out.println("Monitor Stop");
+		// System.out.println("Monitor Stop");
 
 	}
 }

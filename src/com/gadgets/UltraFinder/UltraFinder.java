@@ -3,7 +3,9 @@ package com.gadgets.UltraFinder;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -15,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
@@ -31,7 +33,7 @@ public class UltraFinder {
 
 	public ConcurrentLinkedQueue<File> waitToScanFiles = new ConcurrentLinkedQueue<>();
 	CustomFileFilter filenameFilter = null;
-	UltraFinderConfig config = null;
+	public UltraFinderConfig config = null;
 
 	KeyWordHandler keyWordHandler = null;
 	ConcurrentHashMap<String, ArrayList<ScanResult>> foundResult = new ConcurrentHashMap<>();
@@ -52,13 +54,15 @@ public class UltraFinder {
 		System.out.println("=================================================");
 		if (this.config.gui_mode) {
 			this.gui_form = new UltraFinderForm(this);
+
+			Gson gson_pretty = new GsonBuilder().setPrettyPrinting().create();
+			this.writeSysLog(gson_pretty.toJson(this.config));
 		}
 
 	}
 
 	public void start() throws InterruptedException {
-		this.gui_form.changeTitleName(UltraFinderForm.title + " (Running)");
-		System.out.println("Start fetching file paths...");
+		this.writeSysLog("Start fetching file paths...");
 		File starting_file = new File(config.root_path);
 
 		FileFinder fileFinder = new FileFinder(this, starting_file);
@@ -71,9 +75,9 @@ public class UltraFinder {
 		executorService.shutdown();
 		executorService.awaitTermination(1, TimeUnit.HOURS);
 
-		System.out.println("Fetching completed. Total " + waitToScanFiles.size() + " files.");
+		this.writeSysLog("Fetching completed. Total need to scan " + waitToScanFiles.size() + " files.");
 
-		this.gui_form.updateTotalProgressCount();
+		this.updateTotalFileCount();
 
 		// System.out.println(waitToScanFiles.size());
 
@@ -84,55 +88,59 @@ public class UltraFinder {
 		Thread monitorThread = new Thread(monitor);
 		monitorThread.start();
 
+		this.writeSysLog("Scan start...");
+
 		while (waitToScanFiles.size() > 0 || !search_job.isDone()) {
 			if (waitToScanFiles.peek() != null) {
 
-//				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll(), keyWordHandler,
-//						foundResult);
-//				
 				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll(), this);
 				try {
-					// executorService.submit(fileContentScanner);
-					// jobs.add(fileContentScanner);
-					executor.submit(fileContentScanner);
-					// fileContentScanner.call();
 
-					// System.out.println(totalWork - waitToScanFiles.size() + " / " + totalWork);
+					executor.submit(fileContentScanner);
+
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					this.writeSysLog(e.getMessage());
+
 				}
-				// break;
 			}
 
 		}
 		executor.shutdown();
-		// executor.awaitTermination(1000000, TimeUnit.SECONDS);
 
 		while (monitorThread.isAlive()) {
-			// System.out.println("111111");
+
 		}
 
-		System.out.println("Search ended.");
+		this.writeSysLog("Scan ended.");
 
 		summaryResult();
 
-		// executorService.shutdown();
-		// executorService.awaitTermination(100000, TimeUnit.SECONDS);
-		this.gui_form.changeTitleName(UltraFinderForm.title + " (Done)");
+	}
+	
+	public void updateTotalFileCount() {
+		
+		if(this.gui_form != null) {
+			this.gui_form.updateFoundCount();
+		}
+		
 	}
 
 	public void updateSearchResult(String resultkey) {
 
 		if (this.foundResult.containsKey(resultkey)) {
 
-			this.gui_form.appendLog(resultkey + " | " + this.foundResult.get(resultkey).size());
+			this.gui_form.updateResultTable(this.foundResult.get(resultkey).size(), resultkey);
 		}
 
 	}
 
+	public void updateThreadStatus(Integer runningThreadCnt) {
+		this.gui_form.updateThreadLight(runningThreadCnt);
+	}
+
 	public void summaryResult() {
-		System.out.println("Total " + foundResult.size() + " files match the keyword.");
+		this.writeSysLog("Total " + foundResult.size() + " files match the keyword.");
 
 		String resultTxtPath = System.getProperty("user.dir") + UltraFinder.seperator + "Result.txt";
 		File resultTxtFile = new File(resultTxtPath);
@@ -143,9 +151,9 @@ public class UltraFinder {
 
 			for (String key : foundResult.keySet()) {
 				ArrayList<ScanResult> keyLineList = foundResult.get(key);
-				message = String.format(key + " | " + keyLineList.size() + "%n");
+				message = String.format("(%s) %s", keyLineList.size(), key);
 
-				System.out.println(message);
+				// this.writeSysLog(message);
 				FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", true);
 
 				if (this.config.detail_mode) {
@@ -153,7 +161,7 @@ public class UltraFinder {
 
 						message = String.format("[" + result.lineNum + "] " + result.lineContent + "%n");
 
-						System.out.println(message);
+						// this.writeSysLog(message);
 						FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", true);
 
 					}
@@ -162,11 +170,24 @@ public class UltraFinder {
 
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
-		this.gui_form.appendLog("Reult file save to : " + resultTxtFile.getAbsolutePath());
+		this.writeSysLog("Reult file save to : " + resultTxtFile.getAbsolutePath());
+	}
+
+	public void writeSysLog(String logText) {
+
+		String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+
+		logText = String.format("[%s] %s", timeStamp, logText.trim());
+
+		System.out.println(logText);
+		if (this.gui_form != null) {
+			this.gui_form.appendLog(logText);
+		}
+
 	}
 
 	public static void main(String[] args) throws IOException {
