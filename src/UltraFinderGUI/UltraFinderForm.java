@@ -29,6 +29,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultEditorKit;
 
 import com.gadgets.UltraFinder.UltraFinder;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 
 public class UltraFinderForm {
 
@@ -182,7 +183,10 @@ public class UltraFinderForm {
 
 	public void updateResultTable(Integer count, String filePath) {
 		this.tableModel.addRow(new Object[] { this.resultTable.getRowCount() + 1, count, filePath });
-		resizeColumnWidth(this.resultTable);
+
+		if (this.resultTable.getRowCount() % 10 == 1) {
+			resizeColumnWidth(this.resultTable);
+		}
 
 	}
 

@@ -3,7 +3,7 @@
   "gui_mode": true,
   "detail_mode" : true,
   "thread_num": 10,
-  "filter": ["java","xml", "txt","json"],
+  "filter": ["java","xml","json"],
   "keywords": [
     "COlor","DataBase", "Java"
   ],

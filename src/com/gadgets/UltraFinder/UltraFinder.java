@@ -41,7 +41,7 @@ public class UltraFinder {
 	// ConcurrentLinkedQueue<>();
 	static char seperator = File.separatorChar;
 
-	String spliter = "=========================================================================";
+	String spliter = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=";
 
 	public UltraFinder(UltraFinderConfig config) {
 		CustomFileFilter customFileFilter = new CustomFileFilter(config.filter);
