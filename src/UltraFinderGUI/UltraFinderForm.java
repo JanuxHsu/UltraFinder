@@ -2,7 +2,6 @@ package UltraFinderGUI;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.MenuBar;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -22,6 +21,9 @@ import javax.swing.text.DefaultEditorKit;
 import com.gadgets.UltraFinder.UltraFinder;
 
 public class UltraFinderForm {
+	
+	public static String title = "UltraFinder v1.2 (by JanuxHsu)";
+	
 	JFrame window;
 	final UltraFinder ultraFinder;
 	JLabel totalWorkCntLabel;
@@ -39,7 +41,7 @@ public class UltraFinderForm {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.window = new JFrame("UltraFinder v1.2 (by JanuxHsu)");
+		this.window = new JFrame(title);
 
 		window.setPreferredSize(new Dimension(600, 300));
 

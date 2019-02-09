@@ -57,7 +57,7 @@ public class UltraFinder {
 	}
 
 	public void start() throws InterruptedException {
-
+		this.gui_form.changeTitleName(UltraFinderForm.title + " (Running)");
 		System.out.println("Start fetching file paths...");
 		File starting_file = new File(config.root_path);
 
@@ -119,7 +119,7 @@ public class UltraFinder {
 
 		// executorService.shutdown();
 		// executorService.awaitTermination(100000, TimeUnit.SECONDS);
-		this.gui_form.changeTitleName(this.gui_form.getTitleName() + "  (Done)");
+		this.gui_form.changeTitleName(UltraFinderForm.title + " (Done)");
 	}
 
 	public void updateSearchResult(String resultkey) {
