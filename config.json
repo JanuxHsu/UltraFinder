@@ -1,8 +1,8 @@
 {
   "root_path": "Desktop",
-  "gui_mode": true,
+  "gui_mode": false,
   "detail_mode" : false,
-  "thread_num": 6,
+  "thread_num": 4,
   "filter": [
     "java",
     "txt",
