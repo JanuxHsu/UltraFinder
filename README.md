@@ -5,13 +5,16 @@ UltraFinder
 ```javascript
 {
   "root_path": "Desktop",
-  "thread_num": 4,
+  "gui_mode": true,
+  "detail_mode" : false,
+  "thread_num": 6,
   "filter": [
-    "TxT"
+    "java",
+    "txt",
+    "xml"
   ],
   "keywords": [
-    "July",
-    "Developer"
+    "Develop"
   ],
   "search_options": {
     "case_sensitive": false
