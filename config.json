@@ -2,11 +2,10 @@
   "root_path": "Desktop",
   "thread_num": 6,
   "filter": [
-    "TxT",
-    "bat"
+    "java"
   ],
   "keywords": [
-    "Earth"
+    "Ultra"
   ],
   "search_options": {
     "case_sensitive": false

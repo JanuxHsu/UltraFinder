@@ -52,14 +52,14 @@ public class UltraFinder {
 
 		FileFinder fileFinder = new FileFinder(this, starting_file);
 
-		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 		Future<?> search_job = executorService.submit(fileFinder);
 
 		// System.out.println(waitToScanFiles.size());
 		executorService.shutdown();
-		executorService.awaitTermination(100000, TimeUnit.SECONDS);
-
+		executorService.awaitTermination(1, TimeUnit.HOURS);
+		
 		System.out.println(waitToScanFiles.size());
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(this.config.thread_num, this.config.thread_num, 100000,
@@ -96,23 +96,24 @@ public class UltraFinder {
 			// System.out.println("111111");
 		}
 
-		System.out.println("End");
 
-		System.out.println(foundResult.size());
+		System.out.println("Search ended.");
+		System.out.println("Total " + foundResult.size() + " files match the keyword.");
+
 
 		for (String key : foundResult.keySet()) {
 			ArrayList<ScanResult> keyLineList = foundResult.get(key);
 
 			System.out.println(key + " | " + keyLineList.size());
 			int counter = 0;
-			for (ScanResult zz : keyLineList) {
-				System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
-				counter++;
-				if (counter > 10) {
-					break;
-				}
-
-			}
+//			for (ScanResult zz : keyLineList) {
+//				System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
+//				counter++;
+//				if (counter > 10) {
+//					break;
+//				}
+//
+//			}
 
 		}
 
