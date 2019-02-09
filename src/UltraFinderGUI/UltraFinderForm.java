@@ -151,6 +151,8 @@ public class UltraFinderForm {
 
 		this.resultTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
 
+		this.resultTable.addKeyListener(new ClipboardKeyAdapter(this.resultTable));
+
 		splitPane.add(new JScrollPane(this.resultTable));
 		splitPane.add(new JScrollPane(this.loggingBox));
 		// centerPanel.add(new JScrollPane(this.resultTable), BorderLayout.NORTH);

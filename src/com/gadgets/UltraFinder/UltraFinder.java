@@ -22,7 +22,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.sun.xml.internal.ws.util.StringUtils;
 
 import Model.ScanResult;
 import Model.UltraFinderConfig;
@@ -150,14 +149,14 @@ public class UltraFinder {
 		File resultTxtFile = new File(resultTxtPath);
 		String message = "";
 		try {
-			message = String.format("Total " + foundResult.size() + " files match the keyword.%n");
+			message = String.format("Total " + foundResult.keySet().size() + " files match the keyword.%n");
 			FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", false);
 
 			for (String key : foundResult.keySet()) {
-				FileUtils.writeStringToFile(resultTxtFile, String.format(this.spliter + "%n"), "UTF-8",true);
-				
+				FileUtils.writeStringToFile(resultTxtFile, String.format(this.spliter + "%n"), "UTF-8", true);
+
 				ArrayList<ScanResult> keyLineList = foundResult.get(key);
-				
+
 				message = String.format("Count:(%s) %s%n", keyLineList.size(), key);
 
 				// this.writeSysLog(message);
@@ -177,7 +176,6 @@ public class UltraFinder {
 
 			}
 
-			
 		} catch (IOException e) {
 
 			e.printStackTrace();
