@@ -121,7 +121,8 @@ public class UltraFinder {
 	public void updateTotalFileCount() {
 		
 		if(this.gui_form != null) {
-			this.gui_form.updateFoundCount();
+			
+			this.gui_form.updateTotalProgressCount();
 		}
 		
 	}

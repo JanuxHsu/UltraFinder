@@ -2,14 +2,10 @@
   "root_path": "Desktop",
   "gui_mode": true,
   "detail_mode" : false,
-  "thread_num": 4,
-  "filter": [
-    "java",
-    "txt",
-    "xml"
-  ],
+  "thread_num": 5,
+  "filter": [],
   "keywords": [
-    "Develop"
+    "December"
   ],
   "search_options": {
     "case_sensitive": false

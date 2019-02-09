@@ -48,6 +48,7 @@ public class UltraFinderForm {
 	private Action[] textActions = { new DefaultEditorKit.CopyAction() };
 
 	Color runningColor = new Color(32, 191, 107);
+	Color initColor = new Color(249, 202, 36);
 
 	public UltraFinderForm(UltraFinder ultraFinder) {
 		this.ultraFinder = ultraFinder;
@@ -107,7 +108,7 @@ public class UltraFinderForm {
 			JLabel theadIndicator = new JLabel("Thread: " + thread_id);
 			theadIndicator.setOpaque(true);
 			theadIndicator.setHorizontalAlignment(JLabel.CENTER);
-			theadIndicator.setBackground(Color.RED);
+			theadIndicator.setBackground(this.initColor);
 			threadPanel.add(theadIndicator);
 			this.threadIndicators.put(thread_id, theadIndicator);
 		}

@@ -42,8 +42,7 @@ public class ThreadPoolMonitor implements Runnable {
 				this.ultraFinder.gui_form.updateSearchProgress(this.executor.getCompletedTaskCount());
 			}
 
-			if (this.executor.getCompletedTaskCount() == this.executor.getTaskCount()
-					&& this.executor.getCompletedTaskCount() > 0) {
+			if (this.executor.getCompletedTaskCount() == this.executor.getTaskCount() && this.executor.isTerminated()) {
 				this.run = false;
 			}
 			try {
