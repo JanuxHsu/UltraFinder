@@ -2,10 +2,12 @@
   "root_path": "Desktop",
   "thread_num": 6,
   "filter": [
-    "java"
+    "java",
+    "txt",
+    "xml"
   ],
   "keywords": [
-    "Ultra"
+    "Develop"
   ],
   "search_options": {
     "case_sensitive": false

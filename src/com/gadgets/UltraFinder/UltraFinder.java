@@ -20,10 +20,13 @@ import com.google.gson.stream.JsonReader;
 
 import Model.ScanResult;
 import Model.UltraFinderConfig;
+import UltraFinderGUI.UltraFinderForm;
 
 public class UltraFinder {
 
-	ConcurrentLinkedQueue<File> waitToScanFiles = new ConcurrentLinkedQueue<>();
+	UltraFinderForm gui_form = null;
+
+	public ConcurrentLinkedQueue<File> waitToScanFiles = new ConcurrentLinkedQueue<>();
 	CustomFileFilter filenameFilter = null;
 	UltraFinderConfig config = null;
 
@@ -45,6 +48,8 @@ public class UltraFinder {
 		System.out.println("IgnoreCase: " + this.config.search_caseSensitive);
 		System.out.println("=================================================");
 
+		this.gui_form = new UltraFinderForm(this);
+
 	}
 
 	public void start() throws InterruptedException {
@@ -64,20 +69,24 @@ public class UltraFinder {
 
 		System.out.println("Fetching completed. Total " + waitToScanFiles.size() + " files.");
 
+		this.gui_form.updateTotalProgressCount();
+
 		// System.out.println(waitToScanFiles.size());
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(this.config.thread_num, this.config.thread_num, 100000,
 				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-		ThreadPoolMonitor monitor = new ThreadPoolMonitor(executor, 200);
+		ThreadPoolMonitor monitor = new ThreadPoolMonitor(this, executor, 200);
 		Thread monitorThread = new Thread(monitor);
 		monitorThread.start();
 
 		while (waitToScanFiles.size() > 0 || !search_job.isDone()) {
 			if (waitToScanFiles.peek() != null) {
 
-				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll(), keyWordHandler,
-						foundResult);
+//				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll(), keyWordHandler,
+//						foundResult);
+//				
+				FileContentScanner fileContentScanner = new FileContentScanner(waitToScanFiles.poll(), this);
 				try {
 					// executorService.submit(fileContentScanner);
 					// jobs.add(fileContentScanner);
@@ -107,7 +116,8 @@ public class UltraFinder {
 			ArrayList<ScanResult> keyLineList = foundResult.get(key);
 
 			System.out.println(key + " | " + keyLineList.size());
-			int counter = 0;
+//			this.gui_form.appendLog(key + " | " + keyLineList.size());
+			// int counter = 0;
 //			for (ScanResult zz : keyLineList) {
 //				System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
 //				counter++;
@@ -121,6 +131,7 @@ public class UltraFinder {
 
 		// executorService.shutdown();
 		// executorService.awaitTermination(100000, TimeUnit.SECONDS);
+		this.gui_form.changeTitleName(this.gui_form.getTitleName() + "  (Done)");
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -151,6 +162,15 @@ public class UltraFinder {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+
+	}
+
+	public void updateSearchResult(String resultkey) {
+
+		if (this.foundResult.containsKey(resultkey)) {
+
+			this.gui_form.appendLog(resultkey + " | " + this.foundResult.get(resultkey).size());
 		}
 
 	}

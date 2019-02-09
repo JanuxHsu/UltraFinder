@@ -15,12 +15,21 @@ public class FileContentScanner implements Runnable {
 	File myScannFile = null;
 	ConcurrentHashMap<String, ArrayList<ScanResult>> resultPool = null;
 	KeyWordHandler keyWordHandler = null;
+	UltraFinder ultraFinder;
 
 	public FileContentScanner(File myScannfile, KeyWordHandler keyWordHandler,
 			ConcurrentHashMap<String, ArrayList<ScanResult>> foundResult) {
 		this.myScannFile = myScannfile;
 		this.resultPool = foundResult;
 		this.keyWordHandler = keyWordHandler;
+	}
+	
+
+	public FileContentScanner(File myScannfile, UltraFinder ultraFinder) {
+		this.myScannFile = myScannfile;
+		this.resultPool = ultraFinder.foundResult;
+		this.keyWordHandler = ultraFinder.keyWordHandler;
+		this.ultraFinder = ultraFinder;
 	}
 
 	@Override
@@ -56,7 +65,14 @@ public class FileContentScanner implements Runnable {
 
 					rowCnt++;
 				}
-
+				
+				if(this.ultraFinder != null) {
+					this.ultraFinder.updateSearchResult(this.myScannFile.getAbsolutePath());
+				}
+				
+				
+				
+			
 				// System.out.println(this.myScannFile.getName() + " || cnt: " + rowCnt);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block

@@ -8,10 +8,13 @@ public class ThreadPoolMonitor implements Runnable {
 	private int milliseconds;
 
 	private boolean run = true;
+	
+	final UltraFinder ultraFinder;
 
-	public ThreadPoolMonitor(ThreadPoolExecutor executor, int delay) {
+	public ThreadPoolMonitor(UltraFinder ultraFinder, ThreadPoolExecutor executor, int delay) {
 		this.executor = executor;
 		this.milliseconds = delay;
+		this.ultraFinder = ultraFinder;
 	}
 
 	public void shutdown() {
@@ -26,6 +29,11 @@ public class ThreadPoolMonitor implements Runnable {
 					this.executor.getPoolSize(), this.executor.getCorePoolSize(), this.executor.getActiveCount(),
 					this.executor.getCompletedTaskCount(), this.executor.getTaskCount(), this.executor.isShutdown(),
 					this.executor.isTerminated()));
+			
+			if(this.ultraFinder.gui_form != null) {
+				this.ultraFinder.gui_form.updateSearchProgress(this.executor.getCompletedTaskCount());
+			}
+			
 
 			if (this.executor.getCompletedTaskCount() == this.executor.getTaskCount()
 					&& this.executor.getCompletedTaskCount() > 0) {

@@ -18,6 +18,10 @@ public class FileFinder implements Runnable {
 			if (subFile.isFile() && subFile.exists()) {
 				if (caller.filenameFilter.filterExtension(subFile)) {
 					caller.waitToScanFiles.add(subFile);
+					
+					if(this.caller.gui_form != null) {
+						this.caller.gui_form.updateFoundCount();
+					}
 					// System.out.println(subFile.getAbsolutePath() + " || added!");
 				}
 
