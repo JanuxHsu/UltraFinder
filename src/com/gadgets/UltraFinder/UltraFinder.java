@@ -3,6 +3,7 @@ package com.gadgets.UltraFinder;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -48,6 +49,8 @@ public class UltraFinder {
 	}
 
 	public void start() throws InterruptedException {
+
+		System.out.println("Start fetching file paths...");
 		File starting_file = new File(config.root_path);
 
 		FileFinder fileFinder = new FileFinder(this, starting_file);
@@ -59,8 +62,10 @@ public class UltraFinder {
 		// System.out.println(waitToScanFiles.size());
 		executorService.shutdown();
 		executorService.awaitTermination(1, TimeUnit.HOURS);
-		
-		System.out.println(waitToScanFiles.size());
+
+		System.out.println("Fetching completed. Total " + waitToScanFiles.size() + " files.");
+
+		// System.out.println(waitToScanFiles.size());
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(this.config.thread_num, this.config.thread_num, 100000,
 				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
@@ -96,10 +101,8 @@ public class UltraFinder {
 			// System.out.println("111111");
 		}
 
-
 		System.out.println("Search ended.");
 		System.out.println("Total " + foundResult.size() + " files match the keyword.");
-
 
 		for (String key : foundResult.keySet()) {
 			ArrayList<ScanResult> keyLineList = foundResult.get(key);
