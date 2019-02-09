@@ -1,6 +1,6 @@
 {
   "root_path": "Desktop",
-  "gui_mode": false,
+  "gui_mode": true,
   "detail_mode" : false,
   "thread_num": 4,
   "filter": [

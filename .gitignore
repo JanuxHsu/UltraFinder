@@ -30,7 +30,5 @@ hs_err_pid*
 
 
 # Result
-*.Result.txt
 *.DS_Store
-
 Result\.txt
