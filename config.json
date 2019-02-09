@@ -1,11 +1,11 @@
 {
   "root_path": "Desktop",
   "gui_mode": true,
-  "detail_mode" : false,
+  "detail_mode" : true,
   "thread_num": 5,
-  "filter": [],
+  "filter": ["java"],
   "keywords": [
-    "December"
+    "COlor"
   ],
   "search_options": {
     "case_sensitive": false

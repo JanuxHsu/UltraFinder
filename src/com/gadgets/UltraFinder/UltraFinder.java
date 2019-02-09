@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
+import com.sun.xml.internal.ws.util.StringUtils;
 
 import Model.ScanResult;
 import Model.UltraFinderConfig;
@@ -41,17 +42,19 @@ public class UltraFinder {
 	// ConcurrentLinkedQueue<>();
 	static char seperator = File.separatorChar;
 
+	String spliter = "=========================================================================";
+
 	public UltraFinder(UltraFinderConfig config) {
 		CustomFileFilter customFileFilter = new CustomFileFilter(config.filter);
 		this.filenameFilter = customFileFilter;
 		this.config = config;
 		this.keyWordHandler = new KeyWordHandler(this.config.keywords, this.config.search_caseSensitive);
-		System.out.println("=================================================");
+		System.out.println(spliter);
 		System.out.println("Threads: " + this.config.thread_num);
 		System.out.println("Filters:  " + String.join(", ", this.config.filter));
 		System.out.println("Keywords: " + String.join(", ", this.config.keywords));
 		System.out.println("IgnoreCase: " + this.config.search_caseSensitive);
-		System.out.println("=================================================");
+		System.out.println(spliter);
 		if (this.config.gui_mode) {
 			this.gui_form = new UltraFinderForm(this);
 
@@ -117,14 +120,14 @@ public class UltraFinder {
 		summaryResult();
 
 	}
-	
+
 	public void updateTotalFileCount() {
-		
-		if(this.gui_form != null) {
-			
+
+		if (this.gui_form != null) {
+
 			this.gui_form.updateTotalProgressCount();
 		}
-		
+
 	}
 
 	public void updateSearchResult(String resultkey) {
@@ -147,12 +150,15 @@ public class UltraFinder {
 		File resultTxtFile = new File(resultTxtPath);
 		String message = "";
 		try {
-			message = "Total " + foundResult.size() + " files match the keyword.";
-			FileUtils.writeStringToFile(resultTxtFile, message + "%n", "UTF-8", false);
+			message = String.format("Total " + foundResult.size() + " files match the keyword.%n");
+			FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", false);
 
 			for (String key : foundResult.keySet()) {
+				FileUtils.writeStringToFile(resultTxtFile, String.format(this.spliter + "%n"), "UTF-8",true);
+				
 				ArrayList<ScanResult> keyLineList = foundResult.get(key);
-				message = String.format("(%s) %s", keyLineList.size(), key);
+				
+				message = String.format("Count:(%s) %s%n", keyLineList.size(), key);
 
 				// this.writeSysLog(message);
 				FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", true);
@@ -160,7 +166,7 @@ public class UltraFinder {
 				if (this.config.detail_mode) {
 					for (ScanResult result : keyLineList) {
 
-						message = String.format("[" + result.lineNum + "] " + result.lineContent + "%n");
+						message = String.format("Line:[%s] %s%n", result.lineNum, result.lineContent);
 
 						// this.writeSysLog(message);
 						FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", true);
@@ -170,6 +176,8 @@ public class UltraFinder {
 				}
 
 			}
+
+			
 		} catch (IOException e) {
 
 			e.printStackTrace();
