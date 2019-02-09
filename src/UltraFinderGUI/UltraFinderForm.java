@@ -2,9 +2,14 @@ package UltraFinderGUI;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.MenuBar;
 
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -12,6 +17,7 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.DefaultEditorKit;
 
 import com.gadgets.UltraFinder.UltraFinder;
 
@@ -22,6 +28,8 @@ public class UltraFinderForm {
 	JProgressBar totalWorkBar;
 	JTextArea loggingBox;
 
+	private Action[] textActions = { new DefaultEditorKit.CopyAction() };
+
 	public UltraFinderForm(UltraFinder ultraFinder) {
 		this.ultraFinder = ultraFinder;
 		try {
@@ -31,7 +39,7 @@ public class UltraFinderForm {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.window = new JFrame("UltraFinder v1.0 (by JanuxHsu)");
+		this.window = new JFrame("UltraFinder v1.2 (by JanuxHsu)");
 
 		window.setPreferredSize(new Dimension(600, 300));
 
@@ -52,6 +60,16 @@ public class UltraFinderForm {
 
 		this.loggingBox = new JTextArea();
 
+		JMenu menu = new JMenu("Edit");
+		for (Action textAction : textActions) {
+			menu.add(new JMenuItem(textAction));
+		}
+
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(menu);
+
+		window.setJMenuBar(menuBar);
+
 		DefaultCaret caret = (DefaultCaret) this.loggingBox.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		this.loggingBox.setEditable(false);
@@ -62,6 +80,7 @@ public class UltraFinderForm {
 		window.add(centrerPanel, BorderLayout.CENTER);
 
 		window.pack();
+		window.setLocationRelativeTo(null);
 		window.setVisible(true);
 
 	}
@@ -82,7 +101,7 @@ public class UltraFinderForm {
 	}
 
 	public void appendLog(String txt) {
-		this.loggingBox.append(txt + "\n");
+		this.loggingBox.append(String.format(txt + "%n"));
 	}
 
 	public void changeTitleName(String title) {

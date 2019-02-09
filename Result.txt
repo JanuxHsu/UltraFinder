@@ -1,0 +1,123 @@
+Total 123 files match the keyword.%n/Users/janux/Desktop/wildfly-14.0.1_loadbalance/modules/system/layers/base/org/jboss/as/cli/main/module.xml | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/modules/system/layers/base/org/jboss/as/cli/main/module.xml | 1
+/Users/janux/Desktop/commons-io-2.6-src/src/site/xdoc/download_io.xml | 1
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/mozilla public license 1.1.txt | 27
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/core-feature-pack-licenses.xml | 5
+/Users/janux/Desktop/commons-io-2.6-src/src/site/xdoc/issue-tracking.xml | 1
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/LICENSE.txt | 2
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/core-feature-pack-licenses.xml | 5
+/Users/janux/Desktop/commons-io-2.6/RELEASE-NOTES.txt | 2
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/mozilla public license 1.1.txt | 27
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/servlet-feature-pack-licenses.xml | 14
+/Users/janux/Desktop/wildfly-10.1.0.Final/docs/licenses/h2 license, version 1.0 - h2.txt | 17
+/Users/janux/Desktop/wildfly-10.1.0.Final/LICENSE.txt | 2
+/Users/janux/Desktop/Visual Studio Code.app/Contents/Resources/app/LICENSE.txt | 1
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/common development and distribution license 1.0.txt | 23
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/modules/system/layers/base/org/jboss/as/standalone/main/module.xml | 1
+/Users/janux/Desktop/commons-io-2.6/NOTICE.txt | 1
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/gnu library general public license v2 only.txt | 4
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/gnu general public license, version 2 with the classpath exception.txt | 1
+/Users/janux/Desktop/commons-io-2.6-src/NOTICE.txt | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/gnu library general public license v2 only.txt | 4
+/Users/janux/Desktop/commons-io-2.6-src/src/main/java/org/apache/commons/io/input/XmlStreamReader.java | 1
+/Users/janux/Desktop/apache-tomcat-8.5.32/webapps/docs/RUNNING.txt | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/gnu general public license, version 2 with the classpath exception.txt | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/full-feature-pack-licenses.xml | 22
+/Users/janux/Desktop/Atom.app/Contents/Resources/app/apm/node_modules/node-gyp/gyp/buildbot/aosp_manifest.xml | 5
+/Users/janux/Desktop/eclipse-workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/conf/web.xml | 4
+/Users/janux/Desktop/wildfly-14.0.1.Final/modules/system/layers/base/org/jboss/as/standalone/main/module.xml | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/LICENSE.txt | 2
+/Users/janux/Desktop/Atom.app/Contents/Resources/app/apm/node_modules/npm/node_modules/node-gyp/gyp/buildbot/aosp_manifest.xml | 5
+/Users/janux/Desktop/apache-tomcat-8.5.32/webapps/docs/appdev/sample/web/WEB-INF/web.xml | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/the antlr 2.7.7 license.txt | 5
+/Users/janux/Desktop/apache-tomcat-8.5.32/webapps/docs/BUILDING.txt | 6
+/Users/janux/Desktop/commons-io-2.6-src/pom.xml | 42
+/Users/janux/Desktop/commons-io-2.6-src/src/site/site.xml | 1
+/Users/janux/Desktop/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/cli/main/module.xml | 1
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/licenses.xml | 45
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/modules/system/layers/base/org/jboss/as/server/main/module.xml | 1
+/Users/janux/Desktop/wildfly-10.1.0.Final/docs/licenses/gnu lesser general public license, version 2.1 - lgpl-2.1.txt | 2
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/full-feature-pack-licenses.xml | 26
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/gnu general public license, version 2 with the classpath exception.txt | 1
+/Users/janux/Desktop/commons-io-2.6-src/src/main/java/org/apache/commons/io/FileCleaningTracker.java | 1
+/Users/janux/Desktop/wildfly-14.0.1.Final/modules/system/layers/base/org/jboss/as/cli/main/module.xml | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/common development and distribution license 1.0.txt | 23
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/LICENSE.txt | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/servlet-feature-pack-licenses.xml | 10
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/common development and distribution license 1.0.txt | 23
+/Users/janux/Desktop/wildfly-14.0.1.Final/LICENSE.txt | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/gnu general public license v2.0 only, with classpath exception.txt | 1
+/Users/janux/Desktop/log/nnn.txt | 123
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/gnu library general public license v2 only.txt | 4
+/Users/janux/Desktop/commons-io-2.6-src/src/site/xdoc/index.xml | 2
+/Users/janux/Desktop/Visual Studio Code.app/Contents/Resources/app/extensions/ms-vscode.node-debug/ThirdPartyNotices.txt | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/licenses.xml | 34
+/Users/janux/Desktop/apache-tomcat-8.5.32/conf/web.xml | 4
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/gnu library general public license v2 only.txt | 4
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/modules/system/layers/base/org/jboss/as/standalone/main/module.xml | 1
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/the antlr 2.7.7 license.txt | 5
+/Users/janux/Desktop/apache-tomcat-8.5.32/webapps/docs/appdev/sample/build.xml | 4
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/common development and distribution license 1.0.txt | 23
+/Users/janux/Desktop/wildfly-14.0.1.Final/modules/system/layers/base/org/jboss/as/server/main/module.xml | 1
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/servlet-feature-pack-licenses.xml | 14
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/mozilla public license 1.1.txt | 27
+/Users/janux/Desktop/wildfly-10.1.0.Final/docs/licenses/licenses.xml | 17
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/gnu general public license v2.0 only, with classpath exception.txt | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/the antlr 2.7.7 license.txt | 5
+/Users/janux/Desktop/commons-io-2.6-src/src/main/java/org/apache/commons/io/IOUtils.java | 1
+/Users/janux/Desktop/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/server/main/module.xml | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/licenses.xml | 34
+/Users/janux/Desktop/httpcomponents-client-4.5.2/RELEASE_NOTES.txt | 4
+/Users/janux/Desktop/commons-io-2.6-src/src/site/xdoc/upgradeto1_1.xml | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/common development and distribution license 1.1.txt | 16
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/modules/system/layers/base/org/jboss/as/cli/main/module.xml | 1
+/Users/janux/Desktop/Visual Studio Code.app/Contents/Resources/app/extensions/node_modules/typescript/ThirdPartyNoticeText.txt | 4
+/Users/janux/Desktop/apache-tomcat-8.5.32/work/Catalina/localhost/ROOT/org/apache/jsp/index_jsp.java | 3
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/gnu lesser general public license v2.1 only.txt | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/gnu lesser general public license v2.1 only.txt | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/core-feature-pack-licenses.xml | 2
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/gnu lesser general public license v2.1 or later.txt | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/gnu lesser general public license v2.1 or later.txt | 2
+/Users/janux/Desktop/commons-io-2.6-src/src/test/java/org/apache/commons/io/input/compatibility/XmlStreamReader.java | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/gnu lesser general public license v2.1 or later.txt | 2
+/Users/janux/Desktop/wildfly-10.1.0.Final/docs/licenses/common development and distribution license - cddl.txt | 23
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/servlet-feature-pack-licenses.xml | 10
+/Users/janux/Desktop/wildfly-11.0.0.Final/modules/system/layers/base/org/jboss/as/server/main/module.xml | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/gnu lesser general public license v2.1 only.txt | 2
+/Users/janux/Desktop/commons-io-2.6-src/src/site/xdoc/description.xml | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/core-feature-pack-licenses.xml | 2
+/Users/janux/Desktop/commons-io-2.6-src/src/site/xdoc/mail-lists.xml | 5
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/gnu lesser general public license v2.1 only.txt | 2
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/gnu lesser general public license v2.1 or later.txt | 2
+/Users/janux/Desktop/wildfly-11.0.0.Final/modules/system/layers/base/org/jboss/as/standalone/main/module.xml | 1
+/Users/janux/Desktop/commons-io-2.6-src/src/main/java/org/apache/commons/io/FilenameUtils.java | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/gnu general public license v2.0 only, with classpath exception.txt | 1
+/Users/janux/Desktop/log/zzz.txt | 123
+/Users/janux/Desktop/apache-tomcat-8.5.32/RUNNING.txt | 2
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/the antlr 2.7.7 license.txt | 5
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/gnu general public license, version 2 with the classpath exception.txt | 1
+/Users/janux/Desktop/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/standalone/main/module.xml | 1
+/Users/janux/Desktop/Visual Studio Code.app/Contents/Resources/app/ThirdPartyNotices.txt | 24
+/Users/janux/Desktop/wildfly-11.0.0.Final/docs/licenses/full-feature-pack-licenses.xml | 22
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/modules/system/layers/base/org/jboss/as/server/main/module.xml | 1
+/Users/janux/Desktop/apache-tomcat-8.5.32/webapps/docs/appdev/build.xml.txt | 4
+/Users/janux/Desktop/commons-io-2.6-src/RELEASE-NOTES.txt | 2
+/Users/janux/Desktop/UltraFinder/UltraFinder/Result.txt | 1161
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/common development and distribution license 1.1.txt | 16
+/Users/janux/Desktop/wildfly-10.1.0.Final/docs/licenses/jdom license - jdom-1.0.txt | 1
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/licenses.xml | 45
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/common development and distribution license 1.1.txt | 16
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/common development and distribution license 1.1.txt | 16
+/Users/janux/Desktop/commons-net-3.6/NOTICE.txt | 1
+/Users/janux/Desktop/wildfly-11.0.0.Final_2/docs/licenses/mozilla public license 1.1.txt | 27
+/Users/janux/Desktop/wildfly-10.1.0.Final/docs/licenses/gnu general public license, version 2 with the classpath exception - gpl-2.0-ce.txt | 1
+/Users/janux/Desktop/apache-tomcat-8.5.32/webapps/docs/appdev/web.xml.txt | 1
+/Users/janux/Desktop/commons-io-2.6-src/src/main/java/org/apache/commons/io/serialization/ValidatingObjectInputStream.java | 2
+/Users/janux/Desktop/httpcomponents-client-4.5.2/NOTICE.txt | 1
+/Users/janux/Desktop/commons-io-2.6-src/src/main/java/org/apache/commons/io/FileCleaner.java | 1
+/Users/janux/Desktop/eclipse-workspace/Servers/Tomcat v8.5 Server at localhost-config/web.xml | 4
+/Users/janux/Desktop/eclipse-workspace/SourceCodeScanner/src/ScanJob.java | 1
+/Users/janux/Desktop/wildfly-14.0.1_loadbalance/docs/licenses/full-feature-pack-licenses.xml | 26
+/Users/janux/Desktop/wildfly-14.0.1.Final/docs/licenses/gnu general public license v2.0 only, with classpath exception.txt | 1
+/Users/janux/Desktop/commons-io-2.6-src/src/site/xdoc/proposal.xml | 2
+/Users/janux/Desktop/wildfly-10.1.0.Final/docs/licenses/mozilla public license, version 1.1 - mpl-1.1.txt | 27

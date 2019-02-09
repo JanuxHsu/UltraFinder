@@ -14,6 +14,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
@@ -47,8 +50,9 @@ public class UltraFinder {
 		System.out.println("Keywords: " + String.join(", ", this.config.keywords));
 		System.out.println("IgnoreCase: " + this.config.search_caseSensitive);
 		System.out.println("=================================================");
-
-		this.gui_form = new UltraFinderForm(this);
+		if (this.config.gui_mode) {
+			this.gui_form = new UltraFinderForm(this);
+		}
 
 	}
 
@@ -110,28 +114,59 @@ public class UltraFinder {
 		}
 
 		System.out.println("Search ended.");
-		System.out.println("Total " + foundResult.size() + " files match the keyword.");
 
-		for (String key : foundResult.keySet()) {
-			ArrayList<ScanResult> keyLineList = foundResult.get(key);
-
-			System.out.println(key + " | " + keyLineList.size());
-//			this.gui_form.appendLog(key + " | " + keyLineList.size());
-			// int counter = 0;
-//			for (ScanResult zz : keyLineList) {
-//				System.out.println(zz.fileName + " | " + zz.lineNum + " | " + zz.lineContent);
-//				counter++;
-//				if (counter > 10) {
-//					break;
-//				}
-//
-//			}
-
-		}
+		summaryResult();
 
 		// executorService.shutdown();
 		// executorService.awaitTermination(100000, TimeUnit.SECONDS);
 		this.gui_form.changeTitleName(this.gui_form.getTitleName() + "  (Done)");
+	}
+
+	public void updateSearchResult(String resultkey) {
+
+		if (this.foundResult.containsKey(resultkey)) {
+
+			this.gui_form.appendLog(resultkey + " | " + this.foundResult.get(resultkey).size());
+		}
+
+	}
+
+	public void summaryResult() {
+		System.out.println("Total " + foundResult.size() + " files match the keyword.");
+
+		String resultTxtPath = System.getProperty("user.dir") + UltraFinder.seperator + "Result.txt";
+		File resultTxtFile = new File(resultTxtPath);
+		String message = "";
+		try {
+			message = "Total " + foundResult.size() + " files match the keyword.";
+			FileUtils.writeStringToFile(resultTxtFile, message + "%n", "UTF-8", false);
+
+			for (String key : foundResult.keySet()) {
+				ArrayList<ScanResult> keyLineList = foundResult.get(key);
+				message = String.format(key + " | " + keyLineList.size() + "%n");
+
+				System.out.println(message);
+				FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", true);
+
+				if (this.config.detail_mode) {
+					for (ScanResult result : keyLineList) {
+
+						message = String.format("[" + result.lineNum + "] " + result.lineContent + "%n");
+
+						System.out.println(message);
+						FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", true);
+
+					}
+
+				}
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		this.gui_form.appendLog("Reult file save to : " + resultTxtFile.getAbsolutePath());
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -162,15 +197,6 @@ public class UltraFinder {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-	}
-
-	public void updateSearchResult(String resultkey) {
-
-		if (this.foundResult.containsKey(resultkey)) {
-
-			this.gui_form.appendLog(resultkey + " | " + this.foundResult.get(resultkey).size());
 		}
 
 	}

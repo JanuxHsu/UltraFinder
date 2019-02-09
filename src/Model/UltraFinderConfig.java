@@ -10,6 +10,9 @@ public class UltraFinderConfig {
 	public Set<String> filter;
 	public Set<String> keywords;
 
+	public boolean gui_mode = false;
+	public boolean detail_mode = false;
+
 	public boolean search_caseSensitive = false;
 
 	public UltraFinderConfig() {
