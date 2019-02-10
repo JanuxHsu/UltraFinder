@@ -61,7 +61,7 @@ public class UltraFinder {
 			this.gui_form = new UltraFinderForm(this);
 
 			Gson gson_pretty = new GsonBuilder().setPrettyPrinting().create();
-			this.writeSysLog(gson_pretty.toJson(this.config));
+			this.writeSysLog(String.format("Using config :%n" + gson_pretty.toJson(this.config)));
 		}
 
 	}
