@@ -8,20 +8,34 @@ import org.apache.commons.io.FilenameUtils;
 
 public class CustomFileFilter {
 
-	Set<String> targetExtensions = new HashSet<>();
+	Set<String> targetFileName = new HashSet<>();
 
 	public CustomFileFilter(Set<String> targetExtensions) {
-		this.targetExtensions = targetExtensions;
+		this.targetFileName = targetExtensions;
 	}
 
-	public boolean filterExtension(File tgtFile) {
-		String tgtFileExt = FilenameUtils.getExtension(tgtFile.getName()).toLowerCase();
-		//System.out.println(tgtFileExt);
-		if (targetExtensions.contains(tgtFileExt)) {
-			return true;
-		} else {
-			return false;
+//	public boolean filterExtension(File tgtFile) {
+//		String tgtFileExt = FilenameUtils.getExtension(tgtFile.getName()).toLowerCase();
+//		//System.out.println(tgtFileExt);
+//		if (targetExtensions.contains(tgtFileExt)) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//
+//	}
+
+	public boolean filterFileName(File subFile) {
+		String tgtFileExt = subFile.getName().toLowerCase();
+		// System.out.println(tgtFileExt);
+
+		for (String fileName : this.targetFileName) {
+			if (tgtFileExt.endsWith(fileName)) {
+				return true;
+			}
+
 		}
+		return false;
 
 	}
 

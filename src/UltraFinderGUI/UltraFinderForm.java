@@ -58,13 +58,16 @@ public class UltraFinderForm {
 	private Action[] textActions = { new DefaultEditorKit.CopyAction() };
 
 	Color runningColor = new Color(32, 191, 107);
-	Color initColor = new Color(249, 202, 36);
+	Color idleColor = new Color(249, 202, 36);
+	Color initColor = new Color(149, 175, 192);
 
 	public UltraFinderForm(UltraFinder ultraFinder) {
 		this.ultraFinder = ultraFinder;
 
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+
+			// UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block
@@ -246,7 +249,7 @@ public class UltraFinderForm {
 			break;
 
 		case ThreadWorkEnd:
-			threadIndicator.setBackground(Color.RED);
+			threadIndicator.setBackground(this.idleColor);
 			break;
 
 		default:

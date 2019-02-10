@@ -2,8 +2,8 @@
   "root_path": "Desktop",
   "gui_mode": true,
   "detail_mode" : true,
-  "thread_num": 5,
-  "filter": ["java","pas"],
+  "thread_num": 7,
+  "filter": ["config.json"],
   "keywords": [
    "DataBase", "Table"
   ],

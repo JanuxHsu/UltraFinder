@@ -30,6 +30,7 @@ public class FileContentScanner implements Runnable {
 		this.resultPool = ultraFinder.foundResult;
 		this.keyWordHandler = ultraFinder.keyWordHandler;
 		this.ultraFinder = ultraFinder;
+
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class FileContentScanner implements Runnable {
 
 					rowCnt++;
 
-					this.demoDelay(2);
+					this.demoDelay(1);
 				}
 
 				if (this.ultraFinder != null) {

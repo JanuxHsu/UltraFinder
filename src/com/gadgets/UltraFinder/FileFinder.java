@@ -16,7 +16,7 @@ public class FileFinder implements Runnable {
 
 		for (File subFile : currentPath.listFiles()) {
 			if (subFile.isFile() && subFile.exists()) {
-				if (caller.filenameFilter.filterExtension(subFile)) {
+				if (caller.filenameFilter.filterFileName(subFile)) {
 					caller.waitToScanFiles.add(subFile);
 					
 					if(this.caller.gui_form != null) {
