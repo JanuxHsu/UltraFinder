@@ -14,6 +14,8 @@ public class UltraFinderConfig {
 	public boolean detail_mode = false;
 
 	public boolean search_caseSensitive = false;
+	
+	public boolean demo_mode = false;
 
 	public UltraFinderConfig() {
 		// TODO Auto-generated constructor stub

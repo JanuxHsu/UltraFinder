@@ -86,12 +86,16 @@ public class FileContentScanner implements Runnable {
 	}
 
 	private void demoDelay(Integer delay) {
-		try {
-			TimeUnit.MILLISECONDS.sleep(delay);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		if (this.ultraFinder.config.demo_mode) {
+			try {
+				TimeUnit.MILLISECONDS.sleep(delay);
+			} catch (InterruptedException e) {
+
+				e.printStackTrace();
+			}
 		}
+
 	}
 
 }

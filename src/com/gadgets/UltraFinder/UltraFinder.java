@@ -250,4 +250,8 @@ public class UltraFinder {
 
 	}
 
+	public void close() {
+		System.exit(0);
+	}
+
 }

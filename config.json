@@ -1,13 +1,17 @@
 {
-  "root_path": "Desktop",
-  "gui_mode": true,
-  "detail_mode" : true,
-  "thread_num": 7,
-  "filter": ["config.json"],
-  "keywords": [
-   "DataBase", "Table"
-  ],
-  "search_options": {
-    "case_sensitive": false
-  }
+	"root_path": "Desktop",
+	"gui_mode": true,
+	"detail_mode": true,
+	"thread_num": 4,
+	"filter": [
+		".js"
+	],
+	"keywords": [
+		"DataBase",
+		".Connection"
+	],
+	"search_options": {
+		"case_sensitive": false
+	},
+	"demo_mode": false
 }

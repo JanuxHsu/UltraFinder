@@ -25,15 +25,19 @@ public class ThreadPoolMonitor implements Runnable {
 	@Override
 	public void run() {
 		while (run) {
-			try {
-				System.out.write(String.format(
-						"[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s\r",
-						this.executor.getPoolSize(), this.executor.getCorePoolSize(), this.executor.getActiveCount(),
-						this.executor.getCompletedTaskCount(), this.executor.getTaskCount(), this.executor.isShutdown(),
-						this.executor.isTerminated()).getBytes());
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+
+			if (!this.ultraFinder.config.demo_mode) {
+				try {
+					System.out.write(String.format(
+							"[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s\r",
+							this.executor.getPoolSize(), this.executor.getCorePoolSize(),
+							this.executor.getActiveCount(), this.executor.getCompletedTaskCount(),
+							this.executor.getTaskCount(), this.executor.isShutdown(), this.executor.isTerminated())
+							.getBytes());
+				} catch (IOException e1) {
+
+					e1.printStackTrace();
+				}
 			}
 
 			this.ultraFinder.updateSearchProgress(this.executor.getCompletedTaskCount());
