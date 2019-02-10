@@ -6,8 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import Model.ScanResult;
+import UltraFinderGUI.UltraFinderForm;
 
 public class FileContentScanner implements Runnable {
 
@@ -32,6 +34,9 @@ public class FileContentScanner implements Runnable {
 
 	@Override
 	public void run() {
+
+		this.ultraFinder.updateWorkerStatus(Thread.currentThread().getName(),
+				UltraFinderForm.ThreadAction.ThreadWorkStart, myScannFile.getAbsolutePath());
 
 		if (myScannFile.exists() && myScannFile.isFile() && myScannFile.canRead()) {
 			// BufferedReader bufferedReader;
@@ -58,6 +63,8 @@ public class FileContentScanner implements Runnable {
 					}
 
 					rowCnt++;
+
+					this.demoDelay(2);
 				}
 
 				if (this.ultraFinder != null) {
@@ -70,7 +77,20 @@ public class FileContentScanner implements Runnable {
 			}
 
 		}
+		this.ultraFinder.updateWorkerStatus(Thread.currentThread().getName(),
+				UltraFinderForm.ThreadAction.ThreadWorkEnd, "");
 
+		this.demoDelay(200);
+
+	}
+
+	private void demoDelay(Integer delay) {
+		try {
+			TimeUnit.MILLISECONDS.sleep(delay);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -5,7 +5,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -29,13 +34,17 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultEditorKit;
 
 import com.gadgets.UltraFinder.UltraFinder;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 
 public class UltraFinderForm {
 
 	public static String title = "UltraFinder v1.2 (by JanuxHsu)";
 
-	HashMap<Integer, JLabel> threadIndicators = new HashMap<>();
+	JPanel threadPanel;
+	HashMap<String, JLabel> threadIndicators = new HashMap<>();
+
+	public static enum ThreadAction {
+		ThreadWorkStart, ThreadWorkEnd
+	};
 
 	JFrame window;
 	final UltraFinder ultraFinder;
@@ -99,20 +108,7 @@ public class UltraFinderForm {
 		this.totalWorkBar = new JProgressBar();
 		this.totalWorkBar.setStringPainted(true);
 
-		Integer thread_num = this.ultraFinder.config.thread_num;
-		JPanel threadPanel = new JPanel();
-		threadPanel.setLayout(new GridLayout(1, thread_num, 1, 3));
-
-		for (int i = 0; i < thread_num; i++) {
-
-			Integer thread_id = i + 1;
-			JLabel theadIndicator = new JLabel("Thread: " + thread_id);
-			theadIndicator.setOpaque(true);
-			theadIndicator.setHorizontalAlignment(JLabel.CENTER);
-			theadIndicator.setBackground(this.initColor);
-			threadPanel.add(theadIndicator);
-			this.threadIndicators.put(thread_id, theadIndicator);
-		}
+		this.threadPanel = new JPanel();
 
 		topPanel.add(totalWorkCntLabel, BorderLayout.NORTH);
 		topPanel.add(totalWorkBar, BorderLayout.CENTER);
@@ -170,11 +166,13 @@ public class UltraFinderForm {
 		this.totalWorkBar.setMaximum(this.ultraFinder.waitToScanFiles.size());
 	}
 
-	public void updateSearchProgress(Long currentCount) {
+	public void updateSearchProgress(Integer curr_cnt) {
+		// minus thread pool check job count
+		curr_cnt = curr_cnt - this.threadIndicators.size();
 
-		this.totalWorkBar.setValue(currentCount.intValue());
-		this.totalWorkBar.setString(
-				String.format("Scanned (%s/%s) of files.", currentCount.intValue(), this.totalWorkBar.getMaximum()));
+		this.totalWorkBar.setValue(curr_cnt);
+		this.totalWorkBar
+				.setString(String.format("Scanned (%s/%s) of files.", curr_cnt, this.totalWorkBar.getMaximum()));
 	}
 
 	public void appendLog(String line) {
@@ -199,19 +197,64 @@ public class UltraFinderForm {
 		return this.window.getTitle();
 	}
 
-	public void updateThreadLight(Integer aliveThread) {
-		for (Integer thread_id : this.threadIndicators.keySet()) {
-			JLabel label = this.threadIndicators.get(thread_id);
+	public void initWorkerThreadId(ThreadPoolExecutor executor) throws Exception {
 
-			if (thread_id <= aliveThread) {
-				label.setBackground(this.runningColor);
-				// label.setForeground(Color.WHITE);
-			} else {
-				label.setBackground(Color.RED);
-				// label.setForeground(Color.BLACK);
-			}
+		Integer thread_num = executor.getCorePoolSize();
 
+		System.out.println(thread_num);
+
+		this.threadPanel.setLayout(new GridLayout(1, thread_num, 1, 3));
+
+		ArrayList<String> thread_ids = new ArrayList<>();
+
+		for (int i = 0; i < thread_num; i++) {
+			Future<String> thead_future = executor.submit(new Callable<String>() {
+
+				@Override
+				public String call() throws Exception {
+					return Thread.currentThread().getName();
+				}
+			});
+
+			thread_ids.add(thead_future.get(1, TimeUnit.SECONDS));
 		}
+
+		for (String thread_id : thread_ids) {
+
+			JLabel theadIndicator = new JLabel(thread_id);
+			theadIndicator.setOpaque(true);
+			theadIndicator.setHorizontalAlignment(JLabel.CENTER);
+			theadIndicator.setBackground(this.initColor);
+
+			this.threadPanel.add(theadIndicator);
+			this.threadIndicators.put(thread_id, theadIndicator);
+		}
+		// this.threadPanel.setPreferredSize(new Dimension(800, 100));
+		this.threadPanel.revalidate();
+		this.threadPanel.repaint();
+
+		// this.window.repaint();
+
+	}
+
+	public void updateWorkerThreadStatus(String thread_id, ThreadAction workingStatus, String absolutePath) {
+		JLabel threadIndicator = this.threadIndicators.get(thread_id);
+
+		switch (workingStatus) {
+		case ThreadWorkStart:
+			threadIndicator.setBackground(this.runningColor);
+			break;
+
+		case ThreadWorkEnd:
+			threadIndicator.setBackground(Color.RED);
+			break;
+
+		default:
+			break;
+		}
+
+		threadIndicator.setToolTipText(absolutePath);
+
 	}
 
 	private void resizeColumnWidth(JTable table) {

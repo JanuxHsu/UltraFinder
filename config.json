@@ -2,10 +2,10 @@
   "root_path": "Desktop",
   "gui_mode": true,
   "detail_mode" : true,
-  "thread_num": 10,
-  "filter": ["java","xml","json"],
+  "thread_num": 5,
+  "filter": ["java","pas"],
   "keywords": [
-    "COlor","DataBase", "Java"
+   "DataBase", "Table"
   ],
   "search_options": {
     "case_sensitive": false

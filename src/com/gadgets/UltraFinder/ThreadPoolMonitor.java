@@ -25,7 +25,6 @@ public class ThreadPoolMonitor implements Runnable {
 	@Override
 	public void run() {
 		while (run) {
-
 			try {
 				System.out.write(String.format(
 						"[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s\r",
@@ -37,10 +36,7 @@ public class ThreadPoolMonitor implements Runnable {
 				e1.printStackTrace();
 			}
 
-			if (this.ultraFinder.gui_form != null) {
-				this.ultraFinder.updateThreadStatus(this.executor.getActiveCount());
-				this.ultraFinder.gui_form.updateSearchProgress(this.executor.getCompletedTaskCount());
-			}
+			this.ultraFinder.updateSearchProgress(this.executor.getCompletedTaskCount());
 
 			if (this.executor.getCompletedTaskCount() == this.executor.getTaskCount() && this.executor.isTerminated()) {
 				this.run = false;

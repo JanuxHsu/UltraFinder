@@ -26,6 +26,7 @@ import com.google.gson.stream.JsonReader;
 import Model.ScanResult;
 import Model.UltraFinderConfig;
 import UltraFinderGUI.UltraFinderForm;
+import UltraFinderGUI.UltraFinderForm.ThreadAction;
 
 public class UltraFinder {
 
@@ -34,6 +35,8 @@ public class UltraFinder {
 	public ConcurrentLinkedQueue<File> waitToScanFiles = new ConcurrentLinkedQueue<>();
 	CustomFileFilter filenameFilter = null;
 	public UltraFinderConfig config = null;
+
+	Integer totalNeedToScan = 0;
 
 	KeyWordHandler keyWordHandler = null;
 	ConcurrentHashMap<String, ArrayList<ScanResult>> foundResult = new ConcurrentHashMap<>();
@@ -78,13 +81,16 @@ public class UltraFinder {
 		executorService.awaitTermination(1, TimeUnit.HOURS);
 
 		this.writeSysLog("Fetching completed. Total need to scan " + waitToScanFiles.size() + " files.");
-
+		this.totalNeedToScan = waitToScanFiles.size();
 		this.updateTotalFileCount();
 
 		// System.out.println(waitToScanFiles.size());
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(this.config.thread_num, this.config.thread_num, 100000,
 				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
+		// mapping threadKey with thread_id
+		this.initWorkerStaus(executor);
 
 		ThreadPoolMonitor monitor = new ThreadPoolMonitor(this, executor, 200);
 		Thread monitorThread = new Thread(monitor);
@@ -138,8 +144,23 @@ public class UltraFinder {
 
 	}
 
-	public void updateThreadStatus(Integer runningThreadCnt) {
-		this.gui_form.updateThreadLight(runningThreadCnt);
+	public void initWorkerStaus(ThreadPoolExecutor executor) {
+		try {
+			this.gui_form.initWorkerThreadId(executor);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void updateSearchProgress(Long completed_task_cnt) {
+
+		this.gui_form.updateSearchProgress(completed_task_cnt.intValue());
+	}
+
+	public void updateWorkerStatus(String thread_id, ThreadAction workingStatus, String absolutePath) {
+		this.gui_form.updateWorkerThreadStatus(thread_id, workingStatus, absolutePath);
+
 	}
 
 	public void summaryResult() {
