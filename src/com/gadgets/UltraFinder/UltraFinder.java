@@ -51,19 +51,16 @@ public class UltraFinder {
 		this.filenameFilter = customFileFilter;
 		this.config = config;
 		this.keyWordHandler = new KeyWordHandler(this.config.keywords, this.config.search_caseSensitive);
-		System.out.println(spliter);
-		System.out.println("Threads: " + this.config.thread_num);
-		System.out.println("Filters:  " + String.join(", ", this.config.filter));
-		System.out.println("Keywords: " + String.join(", ", this.config.keywords));
-		System.out.println("IgnoreCase: " + this.config.search_caseSensitive);
-		System.out.println(spliter);
+
+		Gson gson_pretty = new GsonBuilder().setPrettyPrinting().create();
+
 		if (this.config.gui_mode) {
 			this.gui_form = new UltraFinderForm(this);
 
-			Gson gson_pretty = new GsonBuilder().setPrettyPrinting().create();
 			this.writeSysLog(String.format("Using config :%n" + gson_pretty.toJson(this.config)));
+		} else {
+			System.out.println(gson_pretty.toJson(this.config));
 		}
-
 	}
 
 	public void start() throws InterruptedException {
