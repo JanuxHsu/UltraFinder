@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.io.FilenameUtils;
-
 public class CustomFileFilter {
 
 	Set<String> targetFileName = new HashSet<>();
