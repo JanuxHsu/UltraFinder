@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import Model.ScanResult;
-import UltraFinderGUI.UltraFinderForm;
+import gui.UltraFinderForm;
+import model.ScanResult;
 
 public class FileContentScanner implements Runnable {
 

@@ -12,17 +12,6 @@ public class CustomFileFilter {
 		this.targetFileName = targetExtensions;
 	}
 
-//	public boolean filterExtension(File tgtFile) {
-//		String tgtFileExt = FilenameUtils.getExtension(tgtFile.getName()).toLowerCase();
-//		//System.out.println(tgtFileExt);
-//		if (targetExtensions.contains(tgtFileExt)) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//
-//	}
-
 	public boolean filterFileName(File subFile) {
 		String tgtFileExt = subFile.getName().toLowerCase();
 		// System.out.println(tgtFileExt);

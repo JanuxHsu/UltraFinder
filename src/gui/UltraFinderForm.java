@@ -1,10 +1,13 @@
-package UltraFinderGUI;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
@@ -13,6 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -34,6 +38,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultEditorKit;
 
 import com.gadgets.UltraFinder.UltraFinder;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class UltraFinderForm {
 
@@ -89,6 +94,9 @@ public class UltraFinderForm {
 		window.setPreferredSize(new Dimension(800, 600));
 
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		window.setIconImage(Toolkit.getDefaultToolkit()
+				.getImage(this.getClass().getClassLoader().getResource("resources/icon.png")));
 
 		JPanel topPanel = setupTopPanel();
 

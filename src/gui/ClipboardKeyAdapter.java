@@ -1,4 +1,4 @@
-package UltraFinderGUI;
+package gui;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

@@ -23,10 +23,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
-import Model.ScanResult;
-import Model.UltraFinderConfig;
-import UltraFinderGUI.UltraFinderForm;
-import UltraFinderGUI.UltraFinderForm.ThreadAction;
+import gui.UltraFinderForm;
+import gui.UltraFinderForm.ThreadAction;
+import model.ScanResult;
+import model.UltraFinderConfig;
 
 public class UltraFinder {
 
