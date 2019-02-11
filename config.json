@@ -1,10 +1,10 @@
 {
 	"root_path": "Desktop",
 	"gui_mode": true,
-	"detail_mode": true,
+	"detail_mode": false,
 	"thread_num": 6,
 	"filter": [
-		".py"
+		".js"
 	],
 	"keywords": [
 		"DataBase",
@@ -13,5 +13,5 @@
 	"search_options": {
 		"case_sensitive": false
 	},
-	"demo_mode": true
+	"demo_mode": false
 }

@@ -215,9 +215,17 @@ public class UltraFinder {
 
 	}
 
+	public void updateCurrentSearchingStatus(Integer folderCnt, Integer fileCnt) {
+		this.gui_form.updateFileCount(folderCnt, fileCnt, this.waitToScanFiles.size());
+	}
+
+	public void close() {
+		System.exit(0);
+	}
+
 	public static void main(String[] args) throws IOException {
 
-		File configFile = new File("./config.json");
+		File configFile = new File("config.json");
 
 		Gson gson = new Gson();
 		JsonReader jsonReader = new JsonReader(new FileReader(configFile));
@@ -245,10 +253,6 @@ public class UltraFinder {
 			e.printStackTrace();
 		}
 
-	}
-
-	public void close() {
-		System.exit(0);
 	}
 
 }

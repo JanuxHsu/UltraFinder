@@ -41,6 +41,9 @@ public class UltraFinderForm {
 	public static String title = "UltraFinder v2.0 (by JanuxHsu)";
 
 	JPanel threadPanel;
+
+	HashMap<String, JLabel> fileRelatedInfo = new HashMap<>();
+
 	HashMap<String, JLabel> threadIndicators = new HashMap<>();
 
 	public static enum ThreadAction {
@@ -50,6 +53,7 @@ public class UltraFinderForm {
 	JFrame window;
 	final UltraFinder ultraFinder;
 	JLabel totalWorkCntLabel;
+
 	JProgressBar totalWorkBar;
 	JTextArea loggingBox;
 
@@ -112,12 +116,32 @@ public class UltraFinderForm {
 		topPanel.setLayout(new BorderLayout());
 
 		this.totalWorkCntLabel = new JLabel(" Total files found: 0");
+		this.totalWorkCntLabel.setOpaque(true);
+		this.totalWorkCntLabel.setBackground(Color.LIGHT_GRAY);
+		
 		this.totalWorkBar = new JProgressBar();
 		this.totalWorkBar.setStringPainted(true);
 
 		this.threadPanel = new JPanel();
 
-		topPanel.add(totalWorkCntLabel, BorderLayout.NORTH);
+		JPanel searchInfoPanel = new JPanel();
+		searchInfoPanel.setLayout(new GridLayout(1, 3));
+
+		JLabel totalFolderLabel = new JLabel();
+		JLabel totalFileLabel = new JLabel();
+
+		this.fileRelatedInfo.put("directories", totalFolderLabel);
+		this.fileRelatedInfo.put("files", totalFileLabel);
+
+		for (String label_key : this.fileRelatedInfo.keySet()) {
+			JLabel label = this.fileRelatedInfo.get(label_key);
+			searchInfoPanel.add(label);
+
+		}
+
+		searchInfoPanel.add(totalWorkCntLabel);
+
+		topPanel.add(searchInfoPanel, BorderLayout.NORTH);
 		topPanel.add(totalWorkBar, BorderLayout.CENTER);
 		topPanel.add(threadPanel, BorderLayout.SOUTH);
 
@@ -165,8 +189,12 @@ public class UltraFinderForm {
 		return centerPanel;
 	}
 
-	public void updateFoundCount() {
-		this.totalWorkCntLabel.setText(" Total files found: " + this.ultraFinder.waitToScanFiles.size());
+	public void updateFileCount(Integer folderCnt, Integer fileCnt, Integer foundFileCnt) {
+
+		this.fileRelatedInfo.get("directories").setText(" Dir : " + folderCnt);
+		this.fileRelatedInfo.get("files").setText(" Files : " + fileCnt);
+
+		this.totalWorkCntLabel.setText(" Total files found: " + foundFileCnt);
 	}
 
 	public void updateTotalProgressCount() {
@@ -273,8 +301,10 @@ public class UltraFinderForm {
 				Component comp = table.prepareRenderer(renderer, row, column);
 				width = Math.max(comp.getPreferredSize().width + 1, width);
 			}
-			if (width > 1000)
+			if (width > 1000) {
 				width = 1000;
+			}
+
 			columnModel.getColumn(column).setPreferredWidth(width);
 		}
 	}

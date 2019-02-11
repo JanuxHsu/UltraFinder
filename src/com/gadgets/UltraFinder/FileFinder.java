@@ -7,6 +7,9 @@ public class FileFinder implements Runnable {
 	UltraFinder caller = null;
 	File root = null;
 
+	Integer totalFileCount = 0;
+	Integer totalFolderCount = 0;
+
 	public FileFinder(UltraFinder ultraFinder, File startingPath) {
 		this.caller = ultraFinder;
 		this.root = startingPath;
@@ -14,27 +17,31 @@ public class FileFinder implements Runnable {
 
 	protected void fileFetcher(File currentPath) {
 
-		for (File subFile : currentPath.listFiles()) {
-			if (subFile.isFile() && subFile.exists()) {
-				if (caller.filenameFilter.filterFileName(subFile)) {
-					caller.waitToScanFiles.add(subFile);
-					
-					if(this.caller.gui_form != null) {
-						this.caller.gui_form.updateFoundCount();
-					}
-					// System.out.println(subFile.getAbsolutePath() + " || added!");
+		if (!currentPath.isHidden()) {
+			if (currentPath.isDirectory()) {
+				this.totalFolderCount++;
+				for (File subFile : currentPath.listFiles()) {
+
+					fileFetcher(subFile);
+
 				}
 
-			} else {
-				fileFetcher(subFile);
+			} else if (currentPath.isFile() && !currentPath.isDirectory() && currentPath.exists()) {
+
+				if (caller.filenameFilter.filterFileName(currentPath)) {
+					caller.waitToScanFiles.add(currentPath);
+				}
+				this.totalFileCount++;
 			}
+
 		}
+		this.caller.updateCurrentSearchingStatus(this.totalFolderCount, this.totalFileCount);
+
 	}
 
 	@Override
 	public void run() {
 		fileFetcher(root);
-
 	}
 
 }
