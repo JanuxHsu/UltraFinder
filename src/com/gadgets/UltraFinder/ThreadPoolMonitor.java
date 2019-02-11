@@ -1,6 +1,5 @@
 package com.gadgets.UltraFinder;
 
-import java.io.IOException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class ThreadPoolMonitor implements Runnable {
@@ -26,18 +25,14 @@ public class ThreadPoolMonitor implements Runnable {
 	public void run() {
 		while (run) {
 
-			if (!this.ultraFinder.config.demo_mode) {
-				try {
-					System.out.write(String.format(
-							"[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s\r",
-							this.executor.getPoolSize(), this.executor.getCorePoolSize(),
-							this.executor.getActiveCount(), this.executor.getCompletedTaskCount(),
-							this.executor.getTaskCount(), this.executor.isShutdown(), this.executor.isTerminated())
-							.getBytes());
-				} catch (IOException e1) {
+			if (this.ultraFinder.config.demo_mode) {
 
-					e1.printStackTrace();
-				}
+				System.out.println((String.format(
+						"[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s\r",
+						this.executor.getPoolSize(), this.executor.getCorePoolSize(), this.executor.getActiveCount(),
+						this.executor.getCompletedTaskCount(), this.executor.getTaskCount(), this.executor.isShutdown(),
+						this.executor.isTerminated())));
+
 			}
 
 			this.ultraFinder.updateSearchProgress(this.executor.getCompletedTaskCount());

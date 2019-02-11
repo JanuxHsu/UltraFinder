@@ -145,7 +145,7 @@ public class UltraFinder {
 		try {
 			this.gui_form.initWorkerThreadId(executor);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}

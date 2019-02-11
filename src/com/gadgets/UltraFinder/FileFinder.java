@@ -1,6 +1,9 @@
 package com.gadgets.UltraFinder;
 
 import java.io.File;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class FileFinder implements Runnable {
 
@@ -35,13 +38,45 @@ public class FileFinder implements Runnable {
 			}
 
 		}
-		this.caller.updateCurrentSearchingStatus(this.totalFolderCount, this.totalFileCount);
 
+	}
+
+	public void updateGui() {
+		this.caller.updateCurrentSearchingStatus(this.totalFolderCount, this.totalFileCount);
 	}
 
 	@Override
 	public void run() {
+
+		class UpdateJob implements Runnable {
+			final FileFinder fileFinder;
+
+			public UpdateJob(FileFinder fileFinder) {
+				this.fileFinder = fileFinder;
+			}
+
+			public void run() {
+				this.fileFinder.updateGui();
+
+			}
+		}
+
+		UpdateJob job = new UpdateJob(this);
+
+		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler.scheduleAtFixedRate(job, 0, 200, TimeUnit.MILLISECONDS);
+
 		fileFetcher(root);
+		scheduler.shutdownNow();
+		try {
+			scheduler.awaitTermination(1000, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		updateGui();
+
 	}
 
 }

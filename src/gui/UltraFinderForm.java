@@ -118,7 +118,7 @@ public class UltraFinderForm {
 		this.totalWorkCntLabel = new JLabel(" Total files found: 0");
 		this.totalWorkCntLabel.setOpaque(true);
 		this.totalWorkCntLabel.setBackground(Color.LIGHT_GRAY);
-		
+
 		this.totalWorkBar = new JProgressBar();
 		this.totalWorkBar.setStringPainted(true);
 
@@ -236,7 +236,7 @@ public class UltraFinderForm {
 
 		Integer thread_num = executor.getCorePoolSize();
 
-		System.out.println(thread_num);
+//		System.out.println(thread_num);
 
 		this.threadPanel.setLayout(new GridLayout(1, thread_num, 1, 3));
 
