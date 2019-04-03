@@ -2,7 +2,7 @@
 	"root_path": "Desktop",
 	"gui_mode": true,
 	"detail_mode": false,
-	"thread_num": 6,
+	"thread_num": 10,
 	"filter": [
 		".js"
 	],

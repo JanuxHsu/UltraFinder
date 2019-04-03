@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -38,7 +39,7 @@ import com.gadgets.UltraFinder.UltraFinder;
 
 public class UltraFinderForm {
 
-	public static String title = "UltraFinder v2.0 (by JanuxHsu)";
+	public static String title = "UltraFinder v2.1 (by JanuxHsu)";
 
 	JPanel threadPanel;
 
@@ -191,10 +192,14 @@ public class UltraFinderForm {
 
 	public void updateFileCount(Integer folderCnt, Integer fileCnt, Integer foundFileCnt) {
 
-		this.fileRelatedInfo.get("directories").setText(" Dir : " + folderCnt);
-		this.fileRelatedInfo.get("files").setText(" Files : " + fileCnt);
+		SwingUtilities.invokeLater(() -> {
 
-		this.totalWorkCntLabel.setText(" Total files found: " + foundFileCnt);
+			this.fileRelatedInfo.get("directories").setText(" Dir : " + folderCnt);
+			this.fileRelatedInfo.get("files").setText(" Files : " + fileCnt);
+
+			this.totalWorkCntLabel.setText(" Total files found: " + foundFileCnt);
+		});
+
 	}
 
 	public void updateTotalProgressCount() {
@@ -203,19 +208,28 @@ public class UltraFinderForm {
 
 	public void updateSearchProgress(Integer curr_cnt) {
 		// minus thread pool check job count
-		curr_cnt = curr_cnt - this.threadIndicators.size();
+		Integer current_cnt = curr_cnt - this.threadIndicators.size();
 
-		this.totalWorkBar.setValue(curr_cnt);
-		this.totalWorkBar
-				.setString(String.format("Scanned (%s/%s) of files.", curr_cnt, this.totalWorkBar.getMaximum()));
+		SwingUtilities.invokeLater(() -> {
+			this.totalWorkBar.setValue(current_cnt);
+			this.totalWorkBar
+					.setString(String.format("Scanned (%s/%s) of files.", curr_cnt, this.totalWorkBar.getMaximum()));
+		});
 	}
 
 	public void appendLog(String line) {
-		this.loggingBox.append(String.format(line + "%n"));
+
+		SwingUtilities.invokeLater(() -> {
+			this.loggingBox.append(String.format(line + "%n"));
+		});
+
 	}
 
 	public void updateResultTable(Integer count, String filePath) {
-		this.tableModel.addRow(new Object[] { this.resultTable.getRowCount() + 1, count, filePath });
+		SwingUtilities.invokeLater(() -> {
+			this.tableModel.addRow(new Object[] { this.resultTable.getRowCount() + 1, count, filePath });
+
+		});
 
 		if (this.resultTable.getRowCount() % 10 == 1) {
 			resizeColumnWidth(this.resultTable);
@@ -238,7 +252,9 @@ public class UltraFinderForm {
 
 //		System.out.println(thread_num);
 
-		this.threadPanel.setLayout(new GridLayout(1, thread_num, 1, 3));
+		Integer rowNum = (int) Math.sqrt(Double.valueOf(thread_num));
+
+		this.threadPanel.setLayout(new GridLayout(rowNum, 0, 1, 3));
 
 		ArrayList<String> thread_ids = new ArrayList<>();
 
@@ -254,59 +270,69 @@ public class UltraFinderForm {
 			thread_ids.add(thead_future.get(1, TimeUnit.SECONDS));
 		}
 
-		for (String thread_id : thread_ids) {
+		SwingUtilities.invokeLater(() -> {
+			for (String thread_id : thread_ids) {
 
-			JLabel theadIndicator = new JLabel(thread_id);
-			theadIndicator.setOpaque(true);
-			theadIndicator.setHorizontalAlignment(JLabel.CENTER);
-			theadIndicator.setBackground(this.initColor);
+				JLabel theadIndicator = new JLabel(thread_id);
+				theadIndicator.setOpaque(true);
+				theadIndicator.setHorizontalAlignment(JLabel.CENTER);
+				theadIndicator.setBackground(this.initColor);
 
-			this.threadPanel.add(theadIndicator);
-			this.threadIndicators.put(thread_id, theadIndicator);
-		}
-		// this.threadPanel.setPreferredSize(new Dimension(800, 100));
-		this.threadPanel.revalidate();
-		this.threadPanel.repaint();
+				this.threadPanel.add(theadIndicator);
+				this.threadIndicators.put(thread_id, theadIndicator);
+			}
 
-		// this.window.repaint();
+			// this.threadPanel.setPreferredSize(new Dimension(800, 100));
+			this.threadPanel.revalidate();
+			this.threadPanel.repaint();
+
+			// this.window.repaint();
+		});
 
 	}
 
 	public void updateWorkerThreadStatus(String thread_id, ThreadAction workingStatus, String absolutePath) {
-		JLabel threadIndicator = this.threadIndicators.get(thread_id);
 
-		switch (workingStatus) {
-		case ThreadWorkStart:
-			threadIndicator.setBackground(this.runningColor);
-			break;
+		SwingUtilities.invokeLater(() -> {
+			JLabel threadIndicator = this.threadIndicators.get(thread_id);
 
-		case ThreadWorkEnd:
-			threadIndicator.setBackground(this.idleColor);
-			break;
+			switch (workingStatus) {
+			case ThreadWorkStart:
+				threadIndicator.setBackground(this.runningColor);
+				break;
 
-		default:
-			break;
-		}
+			case ThreadWorkEnd:
+				threadIndicator.setBackground(this.idleColor);
+				break;
 
-		threadIndicator.setToolTipText(absolutePath);
+			default:
+				break;
+			}
+
+			threadIndicator.setToolTipText(absolutePath);
+		});
 
 	}
 
 	private void resizeColumnWidth(JTable table) {
-		final TableColumnModel columnModel = table.getColumnModel();
-		for (int column = 0; column < table.getColumnCount(); column++) {
-			int width = 40; // Min width
-			for (int row = 0; row < table.getRowCount(); row++) {
-				TableCellRenderer renderer = table.getCellRenderer(row, column);
-				Component comp = table.prepareRenderer(renderer, row, column);
-				width = Math.max(comp.getPreferredSize().width + 1, width);
-			}
-			if (width > 1000) {
-				width = 1000;
-			}
 
-			columnModel.getColumn(column).setPreferredWidth(width);
-		}
+		SwingUtilities.invokeLater(() -> {
+			final TableColumnModel columnModel = table.getColumnModel();
+			for (int column = 0; column < table.getColumnCount(); column++) {
+				int width = 40; // Min width
+				for (int row = 0; row < table.getRowCount(); row++) {
+					TableCellRenderer renderer = table.getCellRenderer(row, column);
+					Component comp = table.prepareRenderer(renderer, row, column);
+					width = Math.max(comp.getPreferredSize().width + 1, width);
+				}
+				if (width > 1000) {
+					width = 1000;
+				}
+
+				columnModel.getColumn(column).setPreferredWidth(width);
+			}
+		});
+
 	}
 
 }
