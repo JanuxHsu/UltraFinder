@@ -203,7 +203,8 @@ public class UltraFinderForm {
 	}
 
 	public void updateTotalProgressCount() {
-		this.totalWorkBar.setMaximum(this.ultraFinder.waitToScanFiles.size());
+
+		this.totalWorkBar.setMaximum(this.ultraFinder.waitToScanFiles.size() + this.ultraFinder.config.thread_num);
 	}
 
 	public void updateSearchProgress(Integer curr_cnt) {
@@ -213,7 +214,7 @@ public class UltraFinderForm {
 		SwingUtilities.invokeLater(() -> {
 			this.totalWorkBar.setValue(current_cnt);
 			this.totalWorkBar
-					.setString(String.format("Scanned (%s/%s) of files.", curr_cnt, this.totalWorkBar.getMaximum()));
+					.setString(String.format("Completed (%s/%s) of Jobs.", curr_cnt, this.totalWorkBar.getMaximum()));
 		});
 	}
 
