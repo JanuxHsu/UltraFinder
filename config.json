@@ -2,10 +2,9 @@
 	"root_path": "Desktop",
 	"gui_mode": true,
 	"detail_mode": false,
-	"thread_num": 16,
+	"thread_num": 8,
 	"filter": [
-		".js",
-		".txt"
+		".js"
 	],
 	"keywords": [
 		"DataBase",
@@ -14,5 +13,5 @@
 	"search_options": {
 		"case_sensitive": false
 	},
-	"demo_mode": false
+	"demo_mode": true
 }

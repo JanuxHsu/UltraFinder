@@ -255,4 +255,10 @@ public class UltraFinder {
 
 	}
 
+	public void shutdownGracefully() {
+
+		this.gui_form.triggerClose();
+
+	}
+
 }
