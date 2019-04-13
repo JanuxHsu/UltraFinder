@@ -1,18 +1,12 @@
-package gui;
+package com.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.LinkedHashMap;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -31,26 +25,22 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultEditorKit;
 
-import com.gadgets.UltraFinder.UltraFinder;
+import com.UltraFinder.UltraFinder;
+
+import model.WorkerThreadInfo;
+import model.WorkerThreadInfo.ThreadStatus;
 
 public class UltraFinderForm {
 
-	public static String title = "UltraFinder v2.1 (by JanuxHsu)";
-
-	JPanel threadPanel;
-
 	HashMap<String, JLabel> fileRelatedInfo = new HashMap<>();
-
 	HashMap<String, JLabel> threadIndicators = new HashMap<>();
 
-	public static enum ThreadAction {
-		ThreadWorkStart, ThreadWorkEnd
-	};
+	public static String title = "UltraFinder v3.1 (by JanuxHsu)";
+
+	JPanel threadPanel;
 
 	JFrame window;
 	final UltraFinder ultraFinder;
@@ -63,10 +53,6 @@ public class UltraFinderForm {
 	DefaultTableModel tableModel;
 
 	private Action[] textActions = { new DefaultEditorKit.CopyAction() };
-
-	Color runningColor = new Color(32, 191, 107);
-	Color idleColor = new Color(249, 202, 36);
-	Color initColor = new Color(149, 175, 192);
 
 	public UltraFinderForm(UltraFinder ultraFinder) {
 		this.ultraFinder = ultraFinder;
@@ -203,9 +189,9 @@ public class UltraFinderForm {
 
 	}
 
-	public void updateTotalProgressCount() {
+	public void updateTotalProgressCount(int needToScanCount) {
 
-		this.totalWorkBar.setMaximum(this.ultraFinder.waitToScanFiles.size() + this.ultraFinder.config.thread_num);
+		this.totalWorkBar.setMaximum(needToScanCount);
 	}
 
 	public void updateSearchProgress(Integer curr_cnt) {
@@ -230,12 +216,10 @@ public class UltraFinderForm {
 	public void updateResultTable(Integer count, String filePath) {
 		SwingUtilities.invokeLater(() -> {
 			this.tableModel.addRow(new Object[] { this.resultTable.getRowCount() + 1, count, filePath });
-
+			if (this.resultTable.getRowCount() % 10 == 1) {
+				JTableHelper.resizeColumnWidth(this.resultTable, 40, 1000);
+			}
 		});
-
-		if (this.resultTable.getRowCount() % 10 == 1) {
-			resizeColumnWidth(this.resultTable);
-		}
 
 	}
 
@@ -248,98 +232,80 @@ public class UltraFinderForm {
 		return this.window.getTitle();
 	}
 
-	public void initWorkerThreadId(ThreadPoolExecutor executor) throws Exception {
+	public void initWorkerThreadId(LinkedHashMap<String, WorkerThreadInfo> threadIndicators) {
 
-		Integer thread_num = executor.getCorePoolSize();
-
-//		System.out.println(thread_num);
-
-		Integer rowNum = (int) Math.sqrt(Double.valueOf(thread_num));
+		Integer rowNum = (int) Math.sqrt(Double.valueOf(threadIndicators.size()));
 
 		this.threadPanel.setLayout(new GridLayout(rowNum, 0, 1, 3));
 
-		ArrayList<String> thread_ids = new ArrayList<>();
-
-		for (int i = 0; i < thread_num; i++) {
-			Future<String> thead_future = executor.submit(new Callable<String>() {
-
-				@Override
-				public String call() throws Exception {
-					return Thread.currentThread().getName();
-				}
-			});
-
-			thread_ids.add(thead_future.get(1, TimeUnit.SECONDS));
-		}
-
 		SwingUtilities.invokeLater(() -> {
-			for (String thread_id : thread_ids) {
-
-				JLabel theadIndicator = new JLabel(thread_id);
-				theadIndicator.setOpaque(true);
-				theadIndicator.setHorizontalAlignment(JLabel.CENTER);
-				theadIndicator.setBackground(this.initColor);
-
-				this.threadPanel.add(theadIndicator);
-				this.threadIndicators.put(thread_id, theadIndicator);
+			for (String thread_id : threadIndicators.keySet()) {
+				WorkerThreadInfo workerThreadInfo = threadIndicators.get(thread_id);
+				this.threadPanel.add(workerThreadInfo.getWorkerIndicator());
 			}
 
-			// this.threadPanel.setPreferredSize(new Dimension(800, 100));
 			this.threadPanel.revalidate();
 			this.threadPanel.repaint();
-
-			// this.window.repaint();
 		});
 
 	}
 
-	public void updateWorkerThreadStatus(String thread_id, ThreadAction workingStatus, String absolutePath) {
+	public void triggerClose() {
+		this.window.dispose();
+	}
+
+	public void updateThreadPanel(LinkedHashMap<String, WorkerThreadInfo> threadIndicators) {
+		SwingUtilities.invokeLater(() -> {
+			for (String thread_id : threadIndicators.keySet()) {
+				WorkerThreadInfo workerThreadInfo = threadIndicators.get(thread_id);
+				JLabel indicator = workerThreadInfo.getWorkerIndicator();
+
+				ThreadStatus status = workerThreadInfo.getThreadStatus();
+				indicator.setToolTipText(workerThreadInfo.getText());
+
+				switch (status) {
+				case Working:
+
+					indicator.setBackground(WorkerThreadInfo.runningColor);
+					break;
+
+				case Idle:
+
+					indicator.setBackground(WorkerThreadInfo.idleColor);
+					break;
+				default:
+
+					indicator.setBackground(WorkerThreadInfo.initColor);
+					break;
+				}
+
+			}
+		});
+
+	}
+
+	public void updateWorkerThreadStatus(String thread_id, ThreadStatus workingStatus, String absolutePath) {
 
 		SwingUtilities.invokeLater(() -> {
 			JLabel threadIndicator = this.threadIndicators.get(thread_id);
 
 			switch (workingStatus) {
-			case ThreadWorkStart:
-				threadIndicator.setBackground(this.runningColor);
+			case Working:
+				threadIndicator.setBackground(WorkerThreadInfo.runningColor);
 				break;
 
-			case ThreadWorkEnd:
-				threadIndicator.setBackground(this.idleColor);
+			case Idle:
+				threadIndicator.setBackground(WorkerThreadInfo.idleColor);
 				break;
 
 			default:
+
 				break;
 			}
 
 			threadIndicator.setToolTipText(absolutePath);
 		});
 
-	}
-
-	private void resizeColumnWidth(JTable table) {
-
-		SwingUtilities.invokeLater(() -> {
-			final TableColumnModel columnModel = table.getColumnModel();
-			for (int column = 0; column < table.getColumnCount(); column++) {
-				int width = 40; // Min width
-				for (int row = 0; row < table.getRowCount(); row++) {
-					TableCellRenderer renderer = table.getCellRenderer(row, column);
-					Component comp = table.prepareRenderer(renderer, row, column);
-					width = Math.max(comp.getPreferredSize().width + 1, width);
-				}
-				if (width > 1000) {
-					width = 1000;
-				}
-
-				columnModel.getColumn(column).setPreferredWidth(width);
-			}
-		});
-
-	}
-
-	public void triggerClose() {
-		//this.window.dispatchEvent(new WindowEvent(this.window, WindowEvent.WINDOW_CLOSING));
-		this.window.dispose();
 	}
 
 }
