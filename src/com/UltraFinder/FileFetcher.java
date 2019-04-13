@@ -2,8 +2,6 @@ package com.UltraFinder;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
@@ -33,7 +31,7 @@ public class FileFetcher {
 		this.totalChecked_files = ultraFinderRepository.totalChecked_files;
 		this.waitToScanFiles = ultraFinderRepository.waitToScanFiles;
 		this.fileSizeMap = ultraFinderRepository.fileSizeMap;
-		this.mode = this.ultraFinder.config.mode;
+		this.mode = this.ultraFinder.config.ultraFinderMode;
 	}
 
 	public Runnable newFetchJob(File dir) {
@@ -49,67 +47,6 @@ public class FileFetcher {
 
 		return new FileFetchJob(this.ultraFinder, dir);
 
-	}
-
-	public void checkFiles(File directory) {
-		this.totalChecked_directories.incrementAndGet();
-		for (File subFile : directory.listFiles()) {
-
-			if (subFile.exists() && !subFile.isHidden()) {
-				if (subFile.isDirectory()) {
-
-					this.waitToCheckDirectories.add(subFile.getAbsolutePath());
-
-				} else {
-
-					if (subFile.exists() && subFile.isFile() && !subFile.isHidden()) {
-
-						if (this.ultraFinder.filenameFilter.filterFileName(subFile)) {
-
-							switch (this.mode) {
-							case KEYWORD:
-								this.waitToScanFiles.add(subFile);
-								break;
-
-							case FILESIZE:
-
-								try {
-									Thread.sleep(400);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								Long fileSize = subFile.length();
-
-								if (fileSize > 1000) {
-									if (this.fileSizeMap.size() < this.ultraFinder.config.top_size_count) {
-										this.fileSizeMap.put(fileSize, subFile);
-									} else {
-										Set<Long> fileSizeSet = this.fileSizeMap.keySet();
-										Long minSize = Collections.min(fileSizeSet);
-
-										if (fileSize > minSize) {
-											this.fileSizeMap.remove(minSize);
-											this.fileSizeMap.put(fileSize, subFile);
-										}
-
-									}
-								}
-
-								break;
-
-							default:
-								break;
-							}
-						}
-
-					}
-					this.totalChecked_files.incrementAndGet();
-
-				}
-			}
-
-		}
 	}
 
 	public void Start() {
@@ -128,13 +65,13 @@ public class FileFetcher {
 
 		ThreadPoolExecutor threadPoolExecutor = this.ultraFinder.getRepository().getThreadPool();
 		for (String root_path : this.ultraFinder.config.root_paths) {
-			File rootFile = Paths.get(root_path).toFile();
-
-			checkFiles(rootFile);
-
-			threadPoolExecutor.execute(newFetchJob(Paths.get(this.waitToCheckDirectories.poll()).toFile()));
+			this.waitToCheckDirectories.add(root_path);
+//			File rootFile = Paths.get(root_path).toFile();
+//
+//			checkFiles(rootFile);
 
 		}
+		threadPoolExecutor.execute(newFetchJob(Paths.get(this.waitToCheckDirectories.poll()).toFile()));
 
 		while (this.waitToCheckDirectories.size() > 0 || threadPoolExecutor.getActiveCount() != 0
 				|| threadPoolExecutor.getQueue().size() > 0) {

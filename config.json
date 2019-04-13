@@ -1,13 +1,13 @@
 {
-	"UltraFinderMode": "FILESIZE",
+	"ultraFinderMode": "FILESIZE",
 	"root_paths": [
 		"/Users/janux/Desktop"
 	],
 	"gui_mode": true,
 	"detail_mode": false,
-	"thread_num": 9,
+	"thread_num": 16,
 	"filter": [
-		
+	
 	],
 	"keywords": [
 		"Hydra"
@@ -15,7 +15,7 @@
 	"search_options": {
 		"case_sensitive": false,
 		"content_search": true,
-		"top_size_count": 50,
+		"top_size_count": 10,
 		"min_check_size": 9128
 	},
 	"demo_mode": false

@@ -156,7 +156,7 @@ public class UltraFinderForm {
 		this.tableModel = new DefaultTableModel();
 		this.tableModel.addColumn("No.");
 
-		if (this.ultraFinder.getConfig().mode == UltraFinderMode.FILESIZE) {
+		if (this.ultraFinder.getConfig().ultraFinderMode == UltraFinderMode.FILESIZE) {
 			this.tableModel.addColumn("Size");
 		} else {
 			this.tableModel.addColumn("Cnt");

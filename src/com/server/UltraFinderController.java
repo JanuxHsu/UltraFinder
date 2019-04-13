@@ -1,8 +1,6 @@
 package com.server;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -51,19 +49,6 @@ public class UltraFinderController {
 	public Future<?> submitJob(UltraFinderConfig config) {
 
 		config.filter = config.filter.stream().map(item -> item.toLowerCase()).collect(Collectors.toSet());
-
-		// insert Desktop path for dev
-		Set<String> fixed_rootPaths = new HashSet<>();
-		for (String root_path : config.root_paths) {
-
-			String fixed_rootPath = root_path.equals("Desktop")
-					? System.getProperty("user.home") + seperator + "Desktop"
-					: root_path;
-			fixed_rootPaths.add(fixed_rootPath);
-
-		}
-
-		config.root_paths = fixed_rootPaths;
 
 		UltraFinder ultraFinder = new UltraFinder(config);
 

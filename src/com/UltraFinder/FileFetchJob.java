@@ -31,7 +31,7 @@ public class FileFetchJob extends WorkerRunnable {
 		this.totalChecked_files = ultraFinderRepository.totalChecked_files;
 		this.waitToScanFiles = ultraFinderRepository.waitToScanFiles;
 		this.fileSizeMap = ultraFinderRepository.fileSizeMap;
-		this.mode = this.ultraFinder.config.mode;
+		this.mode = this.ultraFinder.config.ultraFinderMode;
 		this.dir = dir;
 	}
 
@@ -58,23 +58,22 @@ public class FileFetchJob extends WorkerRunnable {
 							case FILESIZE:
 
 								Long fileSize = subFile.length();
+								synchronized (this.fileSizeMap) {
+									if (fileSize > this.ultraFinder.config.min_check_size) {
+										if (this.fileSizeMap.size() < this.ultraFinder.config.top_size_count) {
 
-								if (fileSize > this.ultraFinder.config.min_check_size) {
-									if (this.fileSizeMap.size() < this.ultraFinder.config.top_size_count) {
-
-										synchronized (this.fileSizeMap) {
 											this.fileSizeMap.put(fileSize, subFile);
+
+										} else {
+											Set<Long> fileSizeSet = this.fileSizeMap.keySet();
+											Long minSize = Collections.min(fileSizeSet);
+
+											if (fileSize > minSize) {
+												this.fileSizeMap.remove(minSize);
+												this.fileSizeMap.put(fileSize, subFile);
+											}
+
 										}
-
-									} else {
-										Set<Long> fileSizeSet = this.fileSizeMap.keySet();
-										Long minSize = Collections.min(fileSizeSet);
-
-										if (fileSize > minSize) {
-											this.fileSizeMap.remove(minSize);
-											this.fileSizeMap.put(fileSize, subFile);
-										}
-
 									}
 								}
 
@@ -103,6 +102,8 @@ public class FileFetchJob extends WorkerRunnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		this.updateWokerInfoText("");
 
 	}
 

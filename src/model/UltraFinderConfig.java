@@ -8,7 +8,7 @@ public class UltraFinderConfig {
 		KEYWORD, FILESIZE
 	};
 
-	public UltraFinderMode mode = UltraFinderMode.KEYWORD;
+	public UltraFinderMode ultraFinderMode = UltraFinderMode.KEYWORD;
 	public Set<String> root_paths;
 	public Set<String> filter;
 	public Set<String> keywords;

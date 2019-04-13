@@ -27,7 +27,7 @@ public class UltraFinderEntry {
 
 		UltraFinderConfig config = gson.fromJson(configJSON, UltraFinderConfig.class);
 
-		config.mode = UltraFinderMode.valueOf(configJSON.get("UltraFinderMode").getAsString().toUpperCase());
+		config.ultraFinderMode = UltraFinderMode.valueOf(configJSON.get("ultraFinderMode").getAsString().toUpperCase());
 
 		// clean up config filter case
 		config.filter = config.filter.stream().map(item -> item.toLowerCase()).collect(Collectors.toSet());

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.gui.UltraFinderForm;
 
 import model.ScanResult;
@@ -77,7 +80,7 @@ public class UltraFinder {
 		FileFetcher fileFetcher = new FileFetcher(this);
 		fileFetcher.Start();
 
-		if (config.content_search && this.config.mode.equals(UltraFinderMode.KEYWORD)) {
+		if (config.content_search && this.config.ultraFinderMode.equals(UltraFinderMode.KEYWORD)) {
 			this.updateTotalFileCount();
 			this.writeSysLog("Fetching completed. Total need to scan " + repository.waitToScanFiles.size() + " files.");
 
@@ -109,11 +112,13 @@ public class UltraFinder {
 
 			this.writeSysLog("Scan ended.");
 
-			summaryResult();
+			summaryKeyWordResult();
 		} else {
 			threadPool.shutdown();
 
 			this.writeSysLog("Scan ended.");
+
+			summaryFileSizeResult();
 		}
 
 	}
@@ -163,7 +168,8 @@ public class UltraFinder {
 
 	}
 
-	public void summaryResult() {
+	public void summaryKeyWordResult() {
+
 		this.writeSysLog("Total " + foundResult.size() + " files match the keyword.");
 
 		String resultTxtPath = System.getProperty("user.dir") + UltraFinder.seperator + "Result.txt";
@@ -196,6 +202,53 @@ public class UltraFinder {
 				}
 
 			}
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+
+		this.writeSysLog("Reult file save to : " + resultTxtFile.getAbsolutePath());
+	}
+
+	public void summaryFileSizeResult() {
+
+		this.writeSysLog(String.format("Total scanned %s directories, %s files, listing top %s largest files.",
+				this.repository.totalChecked_directories, this.repository.totalChecked_files,
+				this.config.top_size_count));
+		String resultTxtPath = System.getProperty("user.dir") + UltraFinder.seperator + "Result.txt";
+		File resultTxtFile = new File(resultTxtPath);
+
+		try {
+
+			JsonArray resArray = new JsonArray();
+
+			Map<Long, File> infoMap = this.repository.fileSizeMap;
+
+			List<Long> list = new ArrayList<>(infoMap.keySet());
+
+			list.sort(Collections.reverseOrder());
+			Set<Long> result = new LinkedHashSet<>(list);
+
+			SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			for (Long key : result) {
+
+				JsonObject resObj = new JsonObject();
+
+				File file = this.repository.fileSizeMap.get(key);
+
+				resObj.addProperty("name", file.getName());
+				resObj.addProperty("raw_size", file.length());
+				resObj.addProperty("size", FileUtils.byteCountToDisplaySize(key));
+				resObj.addProperty("path", file.getAbsolutePath());
+				resObj.addProperty("modified_date", sDateFormat.format(new Date(file.lastModified())));
+
+				resArray.add(resObj);
+
+			}
+
+			FileUtils.writeStringToFile(resultTxtFile, gson_pretty.toJson(resArray), "UTF-8", false);
 
 		} catch (IOException e) {
 
