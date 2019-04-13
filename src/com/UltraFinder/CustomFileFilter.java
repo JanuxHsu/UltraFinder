@@ -1,4 +1,4 @@
-package com.gadgets.UltraFinder;
+package com.UltraFinder;
 
 import java.io.File;
 import java.util.HashSet;
@@ -14,7 +14,6 @@ public class CustomFileFilter {
 
 	public boolean filterFileName(File subFile) {
 		String tgtFileExt = subFile.getName().toLowerCase();
-		// System.out.println(tgtFileExt);
 
 		for (String fileName : this.targetFileName) {
 			if (tgtFileExt.endsWith(fileName)) {

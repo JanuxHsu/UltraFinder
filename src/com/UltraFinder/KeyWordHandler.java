@@ -1,4 +1,4 @@
-package com.gadgets.UltraFinder;
+package com.UltraFinder;
 
 import java.util.Set;
 

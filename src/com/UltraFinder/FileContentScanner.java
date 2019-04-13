@@ -1,4 +1,4 @@
-package com.gadgets.UltraFinder;
+package com.UltraFinder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,40 +6,31 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
-import gui.UltraFinderForm;
 import model.ScanResult;
+import model.WorkerRunnable;
 
-public class FileContentScanner implements Runnable {
+public class FileContentScanner extends WorkerRunnable {
 
 	File myScannFile = null;
 	ConcurrentHashMap<String, ArrayList<ScanResult>> resultPool = null;
 	KeyWordHandler keyWordHandler = null;
 	UltraFinder ultraFinder;
 
-	public FileContentScanner(File myScannfile, KeyWordHandler keyWordHandler,
-			ConcurrentHashMap<String, ArrayList<ScanResult>> foundResult) {
-		this.myScannFile = myScannfile;
-		this.resultPool = foundResult;
-		this.keyWordHandler = keyWordHandler;
-	}
-
 	public FileContentScanner(File myScannfile, UltraFinder ultraFinder) {
+		super(ultraFinder);
 		this.myScannFile = myScannfile;
 		this.resultPool = ultraFinder.foundResult;
 		this.keyWordHandler = ultraFinder.keyWordHandler;
-		this.ultraFinder = ultraFinder;
+		this.ultraFinder = super.ultraFinder;
 
 	}
 
 	@Override
-	public void run() {
-
-		this.ultraFinder.updateWorkerStatus(Thread.currentThread().getName(),
-				UltraFinderForm.ThreadAction.ThreadWorkStart, myScannFile.getAbsolutePath());
+	public void runJob() {
 
 		if (myScannFile.exists() && myScannFile.isFile() && myScannFile.canRead()) {
+			super.updateWokerInfoText(myScannFile.getPath());
 			// BufferedReader bufferedReader;
 			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(this.myScannFile))) {
 				String line = null;
@@ -64,8 +55,8 @@ public class FileContentScanner implements Runnable {
 					}
 
 					rowCnt++;
+					super.demoDelay(1);
 
-					this.demoDelay(1);
 				}
 
 				if (this.ultraFinder != null) {
@@ -78,23 +69,7 @@ public class FileContentScanner implements Runnable {
 			}
 
 		}
-		this.ultraFinder.updateWorkerStatus(Thread.currentThread().getName(),
-				UltraFinderForm.ThreadAction.ThreadWorkEnd, "");
-
-		this.demoDelay(200);
-
-	}
-
-	private void demoDelay(Integer delay) {
-
-		if (this.ultraFinder.config.demo_mode) {
-			try {
-				TimeUnit.MILLISECONDS.sleep(delay);
-			} catch (InterruptedException e) {
-
-				e.printStackTrace();
-			}
-		}
+		super.updateWokerInfoText("");
 
 	}
 

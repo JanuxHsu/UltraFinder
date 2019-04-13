@@ -1,17 +1,23 @@
 {
-	"root_path": "Desktop",
+	"root_paths": [
+		"/Users/janux/Desktop"
+	],
 	"gui_mode": true,
 	"detail_mode": false,
-	"thread_num": 8,
+	"thread_num": 9,
 	"filter": [
-		".js"
+		".js",
+		".txt"
 	],
 	"keywords": [
 		"DataBase",
-		".Connection"
+		".Connection",
+		"Hydra"
 	],
 	"search_options": {
-		"case_sensitive": false
+		"case_sensitive": false,
+		"content_search": true,
+		"show_file_size": false
 	},
-	"demo_mode": true
+	"demo_mode": false
 }

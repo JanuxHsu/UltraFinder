@@ -1,6 +1,8 @@
 package com.server;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import com.gadgets.UltraFinder.UltraFinder;
+import com.UltraFinder.UltraFinder;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import model.UltraFinderConfig;
@@ -27,20 +29,12 @@ public class UltraFinderController {
 
 	String spliter = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=";
 
+	public UltraFinder finder = null;
+
+	static String status = null;
+
 	private UltraFinderController() {
 
-		ThreadPoolExecutor threadPool = this.threadPool;
-		executorService.scheduleAtFixedRate(new Runnable() {
-
-			@Override
-			public void run() {
-				if (threadPool.getActiveCount() > 0) {
-					System.out.println(threadPool.getActiveCount());
-
-				}
-
-			}
-		}, 10, 200, TimeUnit.MILLISECONDS);
 	}
 
 	public static UltraFinderController getInstance() {
@@ -59,12 +53,21 @@ public class UltraFinderController {
 		config.filter = config.filter.stream().map(item -> item.toLowerCase()).collect(Collectors.toSet());
 
 		// insert Desktop path for dev
+		Set<String> fixed_rootPaths = new HashSet<>();
+		for (String root_path : config.root_paths) {
 
-		config.root_path = config.root_path.equals("Desktop") ? System.getProperty("user.home") + seperator + "Desktop"
-				: config.root_path;
+			String fixed_rootPath = root_path.equals("Desktop")
+					? System.getProperty("user.home") + seperator + "Desktop"
+					: root_path;
+			fixed_rootPaths.add(fixed_rootPath);
+
+		}
+
+		config.root_paths = fixed_rootPaths;
 
 		UltraFinder ultraFinder = new UltraFinder(config);
 
+		this.finder = ultraFinder;
 		Future<?> job = MoreExecutors.listeningDecorator(this.threadPool).submit(new Runnable() {
 
 			@Override
@@ -79,8 +82,6 @@ public class UltraFinderController {
 
 			}
 		});
-
-		
 
 		return job;
 	}

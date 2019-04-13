@@ -123,6 +123,7 @@ public class UltraFinderService {
 
 		if (controller.getActiveCount() > 0) {
 			res.addProperty("status", "running");
+			res.addProperty("count", controller.finder.getProgress());
 			res.addProperty("desciption", "job is running.");
 		} else {
 
