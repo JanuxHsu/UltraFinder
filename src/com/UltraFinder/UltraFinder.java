@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -347,9 +348,22 @@ public class UltraFinder {
 		return this.gui_form;
 	}
 
-	public String getProgress() {
-		// TODO Auto-generated method stub
-		return String.format("%s", this.repository.waitToScanFiles.size());
+	public Map<String, Object> getProgress() {
+		HashMap<String, Object> map = new HashMap<>();
+
+		map.put("dirs", this.repository.totalChecked_directories);
+		map.put("files", this.repository.totalChecked_files);
+		map.put("jobs", this.repository.getThreadPool().getQueue().size());
+
+		if (this.config.ultraFinderMode.equals(UltraFinderMode.FILESIZE)) {
+			map.put("found", this.repository.fileSizeMap.size());
+
+		} else {
+			map.put("found", this.repository.waitToScanFiles.size());
+
+		}
+
+		return map;
 	}
 
 	public Queue<File> getWaitToScanFiles() {

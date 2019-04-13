@@ -1,6 +1,7 @@
 package com.server.servlets;
 
 import java.io.File;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.ws.rs.GET;
@@ -99,14 +100,27 @@ public class UltraFinderService {
 			res.addProperty("status", "fail");
 			res.addProperty("desciption", "job is running.");
 		} else {
-			JsonObject configJSON = gson.fromJson(UltraFinderService.configJson, JsonObject.class);
+			try {
+				JsonObject configJSON = gson.fromJson(UltraFinderService.configJson, JsonObject.class);
+				UltraFinderConfig config = gson.fromJson(configJSON, UltraFinderConfig.class);
 
-			UltraFinderConfig config = gson.fromJson(configJSON, UltraFinderConfig.class);
+				if (config == null) {
 
-			Future<?> job = controller.submitJob(config);
+					res.addProperty("status", "fail");
+					res.addProperty("desciption", "No Config found.");
+				} else {
+					Future<?> job = controller.submitJob(config);
 
-			res.addProperty("status", "success");
-			res.addProperty("desciption", job.toString());
+					res.addProperty("status", "success");
+					res.addProperty("desciption", job.hashCode());
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				res.addProperty("status", "fail");
+				res.addProperty("desciption", e.getMessage());
+				return gsonPretty.toJson(res);
+			}
 
 		}
 
@@ -123,7 +137,8 @@ public class UltraFinderService {
 
 		if (controller.getActiveCount() > 0) {
 			res.addProperty("status", "running");
-			res.addProperty("count", controller.finder.getProgress());
+			Map<String, Object> progressPackage = controller.finder.getProgress();
+			res.add("detail", gson.toJsonTree(progressPackage));
 			res.addProperty("desciption", "job is running.");
 		} else {
 
@@ -139,7 +154,7 @@ public class UltraFinderService {
 	@Path("/checkResult")
 	// @Produces(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getClientVersion() {
+	public Response getResultFile() {
 		File file = new File(FilenameUtils.concat(System.getProperty("user.dir"), "Result.txt"));
 
 		javax.ws.rs.core.Response res = null;
@@ -148,6 +163,26 @@ public class UltraFinderService {
 
 			ResponseBuilder response = javax.ws.rs.core.Response.ok((Object) file);
 			response.header("Content-Disposition", "attachment; filename=" + file.getName());
+			res = response.build();
+		}
+
+		return res;
+
+	}
+
+	@GET
+	@Path("/checkResultJson")
+	// @Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getResultJson() {
+		File file = new File(FilenameUtils.concat(System.getProperty("user.dir"), "Result.txt"));
+
+		javax.ws.rs.core.Response res = null;
+
+		if (file.exists()) {
+
+			ResponseBuilder response = javax.ws.rs.core.Response.ok((Object) file);
+
 			res = response.build();
 		}
 
