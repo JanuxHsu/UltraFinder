@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
 import model.UltraFinderConfig;
+import model.UltraFinderConfig.UltraFinderMode;
 
 public class UltraFinderEntry {
 	public static void main(String[] args) throws IOException {
@@ -25,6 +26,8 @@ public class UltraFinderEntry {
 		JsonObject configJSON = gson.fromJson(jsonReader, JsonObject.class);
 
 		UltraFinderConfig config = gson.fromJson(configJSON, UltraFinderConfig.class);
+
+		config.mode = UltraFinderMode.valueOf(configJSON.get("UltraFinderMode").getAsString().toUpperCase());
 
 		// clean up config filter case
 		config.filter = config.filter.stream().map(item -> item.toLowerCase()).collect(Collectors.toSet());
@@ -46,9 +49,8 @@ public class UltraFinderEntry {
 				.getAsBoolean();
 
 		config.content_search = configJSON.get("search_options").getAsJsonObject().get("content_search").getAsBoolean();
-
-		config.show_file_size = configJSON.get("search_options").getAsJsonObject().get("show_file_size").getAsBoolean();
-
+		config.top_size_count = configJSON.get("search_options").getAsJsonObject().get("top_size_count").getAsInt();
+		config.min_check_size = configJSON.get("search_options").getAsJsonObject().get("min_check_size").getAsLong();
 		UltraFinder ultraFinder = new UltraFinder(config);
 		try {
 			ultraFinder.start();

@@ -31,6 +31,11 @@ public class FileContentScanner extends WorkerRunnable {
 
 		if (myScannFile.exists() && myScannFile.isFile() && myScannFile.canRead()) {
 			super.updateWokerInfoText(myScannFile.getPath());
+
+			if (this.keyWordHandler.keywordPatterns.size() == 0) {
+				return;
+			}
+
 			// BufferedReader bufferedReader;
 			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(this.myScannFile))) {
 				String line = null;

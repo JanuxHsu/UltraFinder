@@ -13,6 +13,10 @@ public class CustomFileFilter {
 	}
 
 	public boolean filterFileName(File subFile) {
+
+		if (this.targetFileName.size() == 0) {
+			return true;
+		}
 		String tgtFileExt = subFile.getName().toLowerCase();
 
 		for (String fileName : this.targetFileName) {

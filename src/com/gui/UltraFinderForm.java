@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -31,6 +32,7 @@ import javax.swing.text.DefaultEditorKit;
 import com.UltraFinder.UltraFinder;
 
 import model.WorkerThreadInfo;
+import model.UltraFinderConfig.UltraFinderMode;
 import model.WorkerThreadInfo.ThreadStatus;
 
 public class UltraFinderForm {
@@ -153,7 +155,13 @@ public class UltraFinderForm {
 
 		this.tableModel = new DefaultTableModel();
 		this.tableModel.addColumn("No.");
-		this.tableModel.addColumn("Cnt");
+
+		if (this.ultraFinder.getConfig().mode == UltraFinderMode.FILESIZE) {
+			this.tableModel.addColumn("Size");
+		} else {
+			this.tableModel.addColumn("Cnt");
+		}
+
 		this.tableModel.addColumn("Path");
 
 		this.resultTable = new JTable(this.tableModel);
@@ -177,7 +185,7 @@ public class UltraFinderForm {
 		return centerPanel;
 	}
 
-	public void updateFileCount(Integer folderCnt, Integer fileCnt, Integer foundFileCnt) {
+	public void updateFileCount(Integer folderCnt, Integer fileCnt, Integer foundFileCnt, int queuedJobCount) {
 
 		SwingUtilities.invokeLater(() -> {
 
@@ -185,6 +193,12 @@ public class UltraFinderForm {
 			this.fileRelatedInfo.get("files").setText(" Files : " + fileCnt);
 
 			this.totalWorkCntLabel.setText(" Total files found: " + foundFileCnt);
+			if (queuedJobCount == 0) {
+				this.window.setTitle(title);
+			} else {
+				this.window.setTitle(title + " Jobs : [" + queuedJobCount + "]");
+			}
+
 		});
 
 	}
@@ -304,6 +318,23 @@ public class UltraFinderForm {
 			}
 
 			threadIndicator.setToolTipText(absolutePath);
+		});
+
+	}
+
+	public void refreshTable(List<Object[]> rowList) {
+		SwingUtilities.invokeLater(() -> {
+			DefaultTableModel model = (DefaultTableModel) this.resultTable.getModel();
+			JTable table = this.resultTable;
+
+			model.setRowCount(0);
+			for (Object[] object : rowList) {
+				model.addRow(object);
+			}
+
+			TableColumnAdjuster tt = new TableColumnAdjuster(table);
+
+			tt.adjustColumns();
 		});
 
 	}

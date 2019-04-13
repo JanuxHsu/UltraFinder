@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -22,6 +27,7 @@ import com.gui.UltraFinderForm;
 
 import model.ScanResult;
 import model.UltraFinderConfig;
+import model.UltraFinderConfig.UltraFinderMode;
 import model.WorkerThreadInfo;
 
 public class UltraFinder {
@@ -71,11 +77,9 @@ public class UltraFinder {
 		FileFetcher fileFetcher = new FileFetcher(this);
 		fileFetcher.Start();
 
-		
-		if (config.content_search) {
+		if (config.content_search && this.config.mode.equals(UltraFinderMode.KEYWORD)) {
 			this.updateTotalFileCount();
 			this.writeSysLog("Fetching completed. Total need to scan " + repository.waitToScanFiles.size() + " files.");
-			
 
 			// System.out.println(waitToScanFiles.size());
 
@@ -108,6 +112,7 @@ public class UltraFinder {
 			summaryResult();
 		} else {
 			threadPool.shutdown();
+
 			this.writeSysLog("Scan ended.");
 		}
 
@@ -213,13 +218,66 @@ public class UltraFinder {
 
 	}
 
-	public void updateFileFetchProgress() {
+	public void updateFileFetchProgress(UltraFinderMode mode) {
 
 		int dirCount = this.repository.totalChecked_directories.get();
 		int fileCount = this.repository.totalChecked_files.get();
-		int waitToScanCount = this.repository.waitToScanFiles.size();
+		int waitToScanCount = 0;
+		int queuedJobCount = this.repository.getThreadPool().getQueue().size();
+		switch (mode) {
+		case KEYWORD:
+			waitToScanCount = this.repository.waitToScanFiles.size();
+			break;
+
+		case FILESIZE:
+			waitToScanCount = this.repository.fileSizeMap.size();
+
+			this.updateFileSizeTable();
+			break;
+
+		default:
+			break;
+		}
+
 		// System.out.println(waitToScanCount);
-		this.gui_form.updateFileCount(dirCount, fileCount, waitToScanCount);
+		this.gui_form.updateFileCount(dirCount, fileCount, waitToScanCount, queuedJobCount);
+	}
+
+	private void updateFileSizeTable() {
+		if (this.getGui() != null) {
+			try {
+				List<Object[]> rowList = new ArrayList<>();
+
+				Map<Long, File> infoMap = this.repository.fileSizeMap;
+
+				List<Long> list = new ArrayList<>(infoMap.keySet());
+
+				list.sort(Collections.reverseOrder());
+				Set<Long> result = new LinkedHashSet<>(list);
+
+				int index = 1;
+
+				for (Long key : result) {
+					if (infoMap.get(key) != null) {
+						// System.out.println(FileUtils.byteCountToDisplaySize(key));
+						ArrayList<Object> row = new ArrayList<>();
+						row.add(index);
+						row.add(FileUtils.byteCountToDisplaySize(key));
+						row.add(infoMap.get(key).getPath());
+
+						rowList.add(row.toArray());
+						index++;
+					}
+
+				}
+
+				this.gui_form.refreshTable(rowList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
 	}
 
 	public void close() {

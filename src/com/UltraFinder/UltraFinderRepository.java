@@ -2,6 +2,7 @@ package com.UltraFinder;
 
 import java.io.File;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -14,6 +15,8 @@ import model.WorkerThreadInfo;
 
 public class UltraFinderRepository {
 	ConcurrentLinkedQueue<String> waitToCheckDirectories = new ConcurrentLinkedQueue<>();
+	ConcurrentHashMap<Long, File> fileSizeMap = new ConcurrentHashMap<>();
+
 	public ConcurrentLinkedQueue<File> waitToScanFiles = new ConcurrentLinkedQueue<>();
 
 	AtomicInteger totalChecked_directories = new AtomicInteger(0);
