@@ -4,10 +4,13 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import model.UltraFinderConfig.UltraFinderMode;
@@ -71,29 +74,37 @@ public class FileFetcher {
 //			checkFiles(rootFile);
 
 		}
-		threadPoolExecutor.execute(newFetchJob(Paths.get(this.waitToCheckDirectories.poll()).toFile()));
+		Future<?> rootJob = threadPoolExecutor.submit(newFetchJob(Paths.get(this.waitToCheckDirectories.poll()).toFile()));
 
-		while (this.waitToCheckDirectories.size() > 0 || threadPoolExecutor.getActiveCount() != 0
-				|| threadPoolExecutor.getQueue().size() > 0) {
+		try {
+			rootJob.get(60, TimeUnit.SECONDS);
+			while (this.waitToCheckDirectories.size() > 0 || threadPoolExecutor.getActiveCount() != 0
+					|| threadPoolExecutor.getQueue().size() > 0) {
 
-			while (this.waitToCheckDirectories.size() > 0) {
+				while (this.waitToCheckDirectories.size() > 0) {
 
-				if (!this.waitToCheckDirectories.isEmpty()) {
+					if (!this.waitToCheckDirectories.isEmpty()) {
 
-					threadPoolExecutor.execute(newFetchJob(Paths.get(this.waitToCheckDirectories.poll()).toFile()));
+						threadPoolExecutor.execute(newFetchJob(Paths.get(this.waitToCheckDirectories.poll()).toFile()));
+
+					}
 
 				}
 
-			}
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-
+		} catch (InterruptedException | ExecutionException | TimeoutException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
+		
 
 		updater.cancel(true);
 

@@ -20,11 +20,11 @@ public abstract class WorkerRunnable implements Runnable {
 	public void run() {
 		this.workerThreadInfo = this.ultraFinder.getRepository().getThreadIndicators()
 				.get(Thread.currentThread().getName());
-
+		
 		workerStart();
 		runJob();
 		workerEnd();
-		demoDelay(100);
+		demoDelay(50);
 
 	}
 

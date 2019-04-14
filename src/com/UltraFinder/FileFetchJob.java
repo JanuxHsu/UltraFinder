@@ -36,6 +36,7 @@ public class FileFetchJob extends WorkerRunnable {
 	}
 
 	public void checkFiles(File directory) {
+
 		this.totalChecked_directories.incrementAndGet();
 		for (File subFile : directory.listFiles()) {
 
@@ -45,65 +46,66 @@ public class FileFetchJob extends WorkerRunnable {
 					this.waitToCheckDirectories.add(subFile.getAbsolutePath());
 
 				} else {
-
-					if (subFile.exists() && subFile.isFile() && !subFile.isHidden()) {
-
-						if (this.ultraFinder.filenameFilter.filterFileName(subFile)) {
-
-							switch (this.mode) {
-							case KEYWORD:
-								this.waitToScanFiles.add(subFile);
-								break;
-
-							case FILESIZE:
-
-								Long fileSize = subFile.length();
-								synchronized (this.fileSizeMap) {
-									if (fileSize > this.ultraFinder.config.min_check_size) {
-										if (this.fileSizeMap.size() < this.ultraFinder.config.top_size_count) {
-
-											this.fileSizeMap.put(fileSize, subFile);
-
-										} else {
-											Set<Long> fileSizeSet = this.fileSizeMap.keySet();
-											Long minSize = Collections.min(fileSizeSet);
-
-											if (fileSize > minSize) {
-												this.fileSizeMap.remove(minSize);
-												this.fileSizeMap.put(fileSize, subFile);
-											}
-
-										}
-									}
-								}
-
-								break;
-
-							default:
-								break;
-							}
-						}
-
-					}
 					this.totalChecked_files.incrementAndGet();
 
+					if (this.ultraFinder.filenameFilter.filterFileName(subFile)) {
+
+						switch (this.mode) {
+						case KEYWORD:
+							this.waitToScanFiles.add(subFile);
+							break;
+
+						case FILESIZE:
+
+							Long fileSize = subFile.length();
+							synchronized (this.fileSizeMap) {
+								if (fileSize > this.ultraFinder.config.min_check_size) {
+									if (this.fileSizeMap.size() < this.ultraFinder.config.top_size_count) {
+
+										this.fileSizeMap.put(fileSize, subFile);
+
+									} else {
+										Set<Long> fileSizeSet = this.fileSizeMap.keySet();
+										Long minSize = Collections.min(fileSizeSet);
+
+										if (fileSize > minSize) {
+											this.fileSizeMap.remove(minSize);
+											this.fileSizeMap.put(fileSize, subFile);
+										}
+
+									}
+								}
+							}
+
+							break;
+
+						default:
+							break;
+						}
+					}
+
 				}
+
 			}
 
 		}
+
 	}
 
 	@Override
 	public void runJob() {
-		this.updateWokerInfoText(dir.getPath());
 
-		try {
-			checkFiles(dir);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (dir != null) {
+			this.updateWokerInfoText(dir.getPath());
+
+			try {
+				checkFiles(dir);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			this.updateWokerInfoText("");
 		}
-
-		this.updateWokerInfoText("");
 
 	}
 

@@ -1,5 +1,5 @@
 {
-	"ultraFinderMode": "FILESIZE",
+	"ultraFinderMode": "KEYWORD",
 	"root_paths": [
 		"/Users/janux/Desktop"
 	],
@@ -7,7 +7,9 @@
 	"detail_mode": false,
 	"thread_num": 16,
 	"filter": [
-	
+		".java",
+		".txt",
+		".py"
 	],
 	"keywords": [
 		"Hydra"

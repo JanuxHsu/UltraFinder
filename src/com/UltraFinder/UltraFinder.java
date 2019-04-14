@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -89,7 +90,20 @@ public class UltraFinder {
 
 			this.writeSysLog("Scan start...");
 
+			long original_jobCount = this.repository.getThreadPool().getCompletedTaskCount();
+
 			ArrayList<Future<?>> scanJobs = new ArrayList<>();
+
+			ScheduledFuture<?> checker = repository.getScheduledWorker().scheduleAtFixedRate(new Runnable() {
+
+				@Override
+				public void run() {
+					gui_form.updateSearchProgress(
+							new Long(repository.getThreadPool().getCompletedTaskCount() - original_jobCount)
+									.intValue());
+				}
+			}, 0, 500, TimeUnit.MILLISECONDS);
+
 			while (repository.waitToScanFiles.size() > 0) {
 
 				if (repository.waitToScanFiles.peek() != null) {
@@ -104,12 +118,14 @@ public class UltraFinder {
 			}
 
 			while (threadPool.getActiveCount() > 0) {
-				int doneJobs = scanJobs.stream().mapToInt(item -> item.isDone() ? 1 : 0).sum();
 
-				this.gui_form.updateSearchProgress(doneJobs);
+				// this.gui_form.updateSearchProgress(scanJobs.size());
 				Thread.sleep(50);
 			}
-			this.gui_form.updateSearchProgress(scanJobs.size());
+
+			checker.cancel(true);
+			int doneJobs = scanJobs.stream().mapToInt(item -> item.isDone() ? 1 : 0).sum();
+			this.gui_form.updateSearchProgress(doneJobs);
 
 			this.writeSysLog("Scan ended.");
 

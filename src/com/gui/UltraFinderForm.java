@@ -210,10 +210,9 @@ public class UltraFinderForm {
 
 	public void updateSearchProgress(Integer curr_cnt) {
 		// minus thread pool check job count
-		Integer current_cnt = curr_cnt - this.threadIndicators.size();
 
 		SwingUtilities.invokeLater(() -> {
-			this.totalWorkBar.setValue(current_cnt);
+			this.totalWorkBar.setValue(curr_cnt);
 			this.totalWorkBar
 					.setString(String.format("Completed (%s/%s) of Jobs.", curr_cnt, this.totalWorkBar.getMaximum()));
 		});
