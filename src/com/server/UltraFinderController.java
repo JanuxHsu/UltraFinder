@@ -48,7 +48,6 @@ public class UltraFinderController {
 
 	public Future<?> submitJob(UltraFinderConfig config) {
 
-	
 		config.filter = config.filter.stream().map(item -> item.toLowerCase()).collect(Collectors.toSet());
 
 		UltraFinder ultraFinder = new UltraFinder(config);
@@ -60,10 +59,12 @@ public class UltraFinderController {
 			public void run() {
 				try {
 					ultraFinder.start();
-					ultraFinder.shutdownGracefully();
+
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
+				} finally {
+					ultraFinder.shutdownGracefully();
 				}
 
 			}

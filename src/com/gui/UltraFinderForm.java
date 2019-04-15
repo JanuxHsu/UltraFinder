@@ -9,12 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -27,12 +23,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.DefaultEditorKit;
 
 import com.UltraFinder.UltraFinder;
 
-import model.WorkerThreadInfo;
 import model.UltraFinderConfig.UltraFinderMode;
+import model.WorkerThreadInfo;
 import model.WorkerThreadInfo.ThreadStatus;
 
 public class UltraFinderForm {
@@ -40,7 +35,7 @@ public class UltraFinderForm {
 	HashMap<String, JLabel> fileRelatedInfo = new HashMap<>();
 	HashMap<String, JLabel> threadIndicators = new HashMap<>();
 
-	public static String title = "UltraFinder v3.1 (by JanuxHsu)";
+	public static String title = "UltraFinder v3.3 (by JanuxHsu)";
 
 	JPanel threadPanel;
 
@@ -53,8 +48,6 @@ public class UltraFinderForm {
 
 	JTable resultTable;
 	DefaultTableModel tableModel;
-
-	private Action[] textActions = { new DefaultEditorKit.CopyAction() };
 
 	public UltraFinderForm(UltraFinder ultraFinder) {
 		this.ultraFinder = ultraFinder;
@@ -70,16 +63,6 @@ public class UltraFinderForm {
 		}
 
 		this.window = new JFrame(title);
-
-		JMenu menu = new JMenu("Edit");
-		for (Action textAction : textActions) {
-			menu.add(new JMenuItem(textAction));
-		}
-
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(menu);
-
-		window.setJMenuBar(menuBar);
 
 		window.setPreferredSize(new Dimension(800, 600));
 
@@ -219,9 +202,11 @@ public class UltraFinderForm {
 	}
 
 	public void appendLog(String line) {
-
+		// '%s'
 		SwingUtilities.invokeLater(() -> {
-			this.loggingBox.append(String.format(line + "%n"));
+
+			this.loggingBox.append(String.format("%s%n", line));
+
 		});
 
 	}

@@ -4,7 +4,7 @@
 		"/Users/janux/Desktop"
 	],
 	"gui_mode": true,
-	"detail_mode": false,
+	"detail_mode": true,
 	"thread_num": 16,
 	"filter": [
 		".java",
@@ -12,11 +12,10 @@
 		".py"
 	],
 	"keywords": [
-		"Hydra"
+		"where proc like \'%s\'"
 	],
 	"search_options": {
 		"case_sensitive": false,
-		"content_search": true,
 		"top_size_count": 10,
 		"min_check_size": 9128
 	},

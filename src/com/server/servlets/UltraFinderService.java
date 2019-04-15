@@ -11,14 +11,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.xml.ws.ResponseWrapper;
 
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.server.UltraFinderController;
@@ -36,47 +33,22 @@ public class UltraFinderService {
 
 	static JsonObject configJson = null;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public String doGetAllClients() {
-
-		JsonElement res = null;
-
-		JsonArray resArray = new JsonArray();
-
-		res = resArray;
-
-		return gsonPretty.toJson(res);
-
-	}
-
-	@GET
-	@Path("/download")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	@ResponseWrapper()
-	public javax.ws.rs.core.Response download() {
-		File file = new File(FilenameUtils.concat(System.getProperty("user.dir"), "hydraClient.jar"));
-
-		javax.ws.rs.core.Response res = null;
-		if (file.exists()) {
-			ResponseBuilder response = javax.ws.rs.core.Response.ok((Object) file);
-			response.header("Content-Disposition", "attachment; filename=" + file.getName());
-
-			res = response.build();
-		}
-
-		return res;
-
-	}
-
 	@POST
 	@Path("/setConfig")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String setConfig(String configStr) {
-		System.out.println(configStr);
-		UltraFinderService.configJson = (JsonObject) jsonParser.parse(configStr);
 
-		return gson.toJson(UltraFinderService.configJson);
+		try {
+			System.out.println(configStr);
+			UltraFinderService.configJson = (JsonObject) jsonParser.parse(configStr);
+			return gson.toJson(UltraFinderService.configJson);
+		} catch (Exception e) {
+			JsonObject res = new JsonObject();
+			res.addProperty("status", "fail");
+			res.addProperty("desciption", e.getMessage());
+			return gsonPretty.toJson(res);
+		}
+
 	}
 
 	@GET
@@ -84,6 +56,10 @@ public class UltraFinderService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getConfig() {
 		System.out.println(gsonPretty.toJson(UltraFinderService.configJson));
+
+		if (UltraFinderService.configJson == null) {
+			return gsonPretty.toJson(gson.toJsonTree(new UltraFinderConfig()));
+		}
 		return gsonPretty.toJson(UltraFinderService.configJson);
 
 	}
@@ -101,18 +77,28 @@ public class UltraFinderService {
 			res.addProperty("desciption", "job is running.");
 		} else {
 			try {
-				JsonObject configJSON = gson.fromJson(UltraFinderService.configJson, JsonObject.class);
-				UltraFinderConfig config = gson.fromJson(configJSON, UltraFinderConfig.class);
+				UltraFinderConfig config = null;
+				try {
+					JsonObject configJSON = gson.fromJson(UltraFinderService.configJson, JsonObject.class);
+					config = gson.fromJson(configJSON, UltraFinderConfig.class);
 
-				if (config == null) {
-
+				} catch (Exception e) {
+					e.printStackTrace();
 					res.addProperty("status", "fail");
-					res.addProperty("desciption", "No Config found.");
-				} else {
+					res.addProperty("desciption", e.getStackTrace().toString());
+					return gsonPretty.toJson(res);
+				}
+
+				if (config != null) {
 					Future<?> job = controller.submitJob(config);
 
 					res.addProperty("status", "success");
 					res.addProperty("desciption", job.hashCode());
+					return gsonPretty.toJson(res);
+				} else {
+					res.addProperty("status", "fail");
+					res.addProperty("desciption", "unknown error");
+					return gsonPretty.toJson(res);
 				}
 
 			} catch (Exception e) {

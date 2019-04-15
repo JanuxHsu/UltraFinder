@@ -23,11 +23,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.gui.UltraFinderForm;
 
 import model.ScanResult;
@@ -38,6 +40,7 @@ import model.WorkerThreadInfo;
 public class UltraFinder {
 	public static char seperator = File.separatorChar;
 	Gson gson_pretty = new GsonBuilder().setPrettyPrinting().create();
+	JsonParser jsonbParser = new JsonParser();
 
 	ConcurrentHashMap<String, ArrayList<ScanResult>> foundResult = new ConcurrentHashMap<>();
 
@@ -56,10 +59,12 @@ public class UltraFinder {
 		this.filenameFilter = customFileFilter;
 		this.config = config;
 		this.keyWordHandler = new KeyWordHandler(this.config.keywords, this.config.search_caseSensitive);
+		this.gui_form = this.config.gui_mode ? new UltraFinderForm(this) : null;
+
 		this.repository = new UltraFinderRepository(this.config);
 
-		this.gui_form = this.config.gui_mode ? new UltraFinderForm(this) : null;
-		this.writeSysLog(String.format("Using config :%n" + gson_pretty.toJson(this.config)));
+		this.writeSysLog(
+				String.format("Using config :%n%s", StringEscapeUtils.unescapeJava(gson_pretty.toJson(this.config))));
 
 		// mapping threadKey with thread_id
 		this.initWorkerStaus(this.repository.getThreadPool());
@@ -82,7 +87,8 @@ public class UltraFinder {
 		FileFetcher fileFetcher = new FileFetcher(this);
 		fileFetcher.Start();
 
-		if (config.content_search && this.config.ultraFinderMode.equals(UltraFinderMode.KEYWORD)) {
+		switch (this.config.ultraFinderMode) {
+		case KEYWORD:
 			this.updateTotalFileCount();
 			this.writeSysLog("Fetching completed. Total need to scan " + repository.waitToScanFiles.size() + " files.");
 
@@ -130,12 +136,20 @@ public class UltraFinder {
 			this.writeSysLog("Scan ended.");
 
 			summaryKeyWordResult();
-		} else {
+			break;
+
+		case FILESIZE:
 			threadPool.shutdown();
 
 			this.writeSysLog("Scan ended.");
 
 			summaryFileSizeResult();
+			break;
+
+		default:
+			this.writeSysLog("Scan ended.");
+			this.writeSysLog("unknown mode type.");
+			break;
 		}
 
 	}
@@ -193,7 +207,12 @@ public class UltraFinder {
 		File resultTxtFile = new File(resultTxtPath);
 		String message = "";
 		try {
-			message = String.format("Total " + foundResult.keySet().size() + " files match the keyword.%n");
+
+			message = String.format("Total scanned %s directories, %s files, Total %s files match the keyword.%n",
+					this.repository.totalChecked_directories, this.repository.totalChecked_files,
+					foundResult.keySet().size());
+			this.writeSysLog(message);
+
 			FileUtils.writeStringToFile(resultTxtFile, message, "UTF-8", false);
 
 			for (String key : foundResult.keySet()) {

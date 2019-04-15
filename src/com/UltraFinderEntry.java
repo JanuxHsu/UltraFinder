@@ -48,7 +48,6 @@ public class UltraFinderEntry {
 		config.search_caseSensitive = configJSON.get("search_options").getAsJsonObject().get("case_sensitive")
 				.getAsBoolean();
 
-		config.content_search = configJSON.get("search_options").getAsJsonObject().get("content_search").getAsBoolean();
 		config.top_size_count = configJSON.get("search_options").getAsJsonObject().get("top_size_count").getAsInt();
 		config.min_check_size = configJSON.get("search_options").getAsJsonObject().get("min_check_size").getAsLong();
 		UltraFinder ultraFinder = new UltraFinder(config);
