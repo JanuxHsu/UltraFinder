@@ -9,7 +9,7 @@ UltraFinder
 		"/Users/janux/Desktop"
 	],
 	"gui_mode": true,
-	"detail_mode": false,
+	"detail_mode": true,
 	"thread_num": 16,
 	"filter": [
 	
@@ -19,7 +19,6 @@ UltraFinder
 	],
 	"search_options": {
 		"case_sensitive": false,
-		"content_search": true,
 		"top_size_count": 10,
 		"min_check_size": 9128
 	},
@@ -42,9 +41,8 @@ UltraFinder
   ],
   "thread_num": 16,
   "gui_mode": true,
-  "detail_mode": false,
+  "detail_mode": true,
   "search_caseSensitive": false,
-  "content_search": false,
   "demo_mode": true,
   "top_size_count": 100,
   "min_check_size": 1024
