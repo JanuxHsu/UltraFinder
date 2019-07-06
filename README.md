@@ -1,7 +1,7 @@
 UltraFinder
 
 ## Mode Option
-'''
+'''javascript
 ["KEYWORD","FILESIZE"]
 '''
 
