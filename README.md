@@ -1,10 +1,15 @@
 UltraFinder
 
+## Mode Option
+'''
+["KEYWORD","FILESIZE"]
+'''
+
 
 ## config json template (Standalone Mode)
 ```javascript
 {
-	"ultraFinderMode": "FILESIZE",
+	"ultraFinderMode": "KEYWORD",
 	"root_paths": [
 		"/Users/janux/Desktop"
 	],
@@ -12,10 +17,12 @@ UltraFinder
 	"detail_mode": true,
 	"thread_num": 16,
 	"filter": [
-	
+		".java",
+		".txt",
+		".py"
 	],
 	"keywords": [
-		"Hydra"
+		"where proc like \'%s\'"
 	],
 	"search_options": {
 		"case_sensitive": false,
