@@ -35,7 +35,7 @@ public class UltraFinderForm {
 	HashMap<String, JLabel> fileRelatedInfo = new HashMap<>();
 	HashMap<String, JLabel> threadIndicators = new HashMap<>();
 
-	public static String title = "UltraFinder v3.3 (by JanuxHsu)";
+	public static String title = "UltraFinder v3.4 (by JanuxHsu)";
 
 	JPanel threadPanel;
 
