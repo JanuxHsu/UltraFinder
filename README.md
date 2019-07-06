@@ -1,9 +1,9 @@
 UltraFinder
 
 ## Mode Option
-'''javascript
+```javascript
 ["KEYWORD","FILESIZE"]
-'''
+```
 
 
 ## config json template (Standalone Mode)
